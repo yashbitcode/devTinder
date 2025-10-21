@@ -12,9 +12,10 @@ app.get("/", (req, res) => res.send("HI BRO!"));
 app.post("/signup", async (req, res) => {
     try {
         const userData = req.body;
-        const doc = new User(userData);
+        // const doc = new User(userData);
+        // await doc.save();
 
-        await doc.save();
+        await User.insertOne(userData);
         res.send("User Created Successfully!");
     } catch (err) {
         res.status(500).json({
@@ -23,7 +24,7 @@ app.post("/signup", async (req, res) => {
     }
 });
 
-app.get("/users", async (req, res) => {
+app.get("/feed", async (req, res) => {
     try {
         const allUsers = await User.find({});
 
@@ -39,14 +40,67 @@ app.get("/users", async (req, res) => {
 
 app.post("/user", async (req, res) => {
     try {
-        const emailId = req.body;
+        const emailId = req.body.emailId;
+        const user = await User.findOne({
+            emailId,
+        }).exec();
 
-        const user = await User.findOne(emailId);
+        if (user) return res.json(user);
 
-        if(user) return res.json(user);
+        res.status(404).json({
+            error: "User not found",
+        });
+    } catch (err) {
+        res.status(500).json({
+            error: "Something went wrong",
+        });
+    }
+});
 
-        return res.status(404).json({
-            error: "User not found"
+app.get("/userById/:id", async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const user = await User.findById(userId).exec();
+        
+        if (user) return res.json(user);
+
+        res.status(404).json({
+            error: "User not found",
+        });
+    } catch (err) {
+        res.status(500).json({
+            error: "Something went wrong",
+        });
+    }
+});
+
+app.delete("/user/:id", async (req, res) => {
+    try {
+        const userId = req.params.id;
+        await User.findByIdAndDelete(userId).exec();
+        res.json({
+            id: userId,
+            success: "User deleted successfully!"
+        });
+    } catch (err) {
+        res.status(500).json({
+            error: "Something went wrong",
+        });
+    }
+});
+
+app.patch("/user", async (req, res) => {
+    try {
+        const userData = req.body;
+        const user = await User.findByIdAndUpdate(userData.userId, userData, {
+            returnDocument: "after"
+        });
+
+        console.log(user);
+
+        return res.json({
+            id: userData.userId,
+            success: "Data updated successfully!"
         });
     } catch (err) {
         res.status(500).json({
