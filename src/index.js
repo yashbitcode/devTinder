@@ -93,7 +93,8 @@ app.patch("/user", async (req, res) => {
     try {
         const userData = req.body;
         const user = await User.findByIdAndUpdate(userData.userId, userData, {
-            returnDocument: "after"
+            returnDocument: "after",
+            runValidators: true
         });
 
         console.log(user);
@@ -108,6 +109,28 @@ app.patch("/user", async (req, res) => {
         });
     }
 });
+
+// app.patch("/nnn", async (req, res) => {
+//     try {
+//         const userData = req.body;
+//         const user = await User.findOneAndUpdate({
+//             emailId: userData.emailId
+//         }, userData, {
+//             returnDocument: "after"
+//         });
+
+//         console.log(user);
+
+//         return res.json({
+//             id: userData.userId,
+//             success: "Data updated successfully!"
+//         });
+//     } catch (err) {
+//         res.status(500).json({
+//             error: "Something went wrong",
+//         });
+//     }
+// });
 
 connect()
     .then(() => {
