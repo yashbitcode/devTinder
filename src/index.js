@@ -1,5 +1,5 @@
 const express = require("express");
-const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 const connect = require("./config/database");
 const User = require("./models/user");
 
@@ -11,14 +11,50 @@ app.use(express.json());
 app.get("/", (req, res) => res.send("HI BRO!"));
 app.post("/signup", async (req, res) => {
     try {
-        const userData = req.body;
+        const {
+            firstName,
+            lastName,
+            emailId,
+            password,
+        } = req.body;
+
+        const passwordHash = await bcrypt.hash(password, 10);
+
         // const doc = new User(userData);
         // await doc.save();
+        await User.insertOne({
+            firstName, 
+            lastName,
+            emailId,
+            password: passwordHash
+        });
 
-        await User.insertOne(userData);
         res.send("User Created Successfully!");
     } catch (err) {
-        res.status(500).json({
+        res.status(400).json({
+            error: err.message,
+        });
+    }
+});
+
+app.post("/login", async (req, res) => {
+    try {  
+        const { emailId, password } = req.body;
+        const user = await User.findOne({
+            emailId
+        });
+
+        if(!user) throw new Error("Email doesn't exist");
+        const passwordMatch = await bcrypt.compare(password, user.password);
+
+        if(passwordMatch) return res.json({
+            success: true,
+            message: "Login Successful!"
+        });
+
+        throw new Error("Password doesn't match with the email!");
+    } catch (err) {
+        res.status(400).json({
             error: err.message,
         });
     }
@@ -32,7 +68,7 @@ app.get("/feed", async (req, res) => {
             allUsers,
         });
     } catch (err) {
-        res.status(500).json({
+        res.status(400).json({
             error: err.message,
         });
     }
@@ -51,7 +87,7 @@ app.post("/user", async (req, res) => {
             error: "User not found",
         });
     } catch (err) {
-        res.status(500).json({
+        res.status(400).json({
             error: "Something went wrong",
         });
     }
@@ -68,7 +104,7 @@ app.get("/userById/:id", async (req, res) => {
             error: "User not found",
         });
     } catch (err) {
-        res.status(500).json({
+        res.status(400).json({
             error: "Something went wrong",
         });
     }
@@ -83,7 +119,7 @@ app.delete("/user/:id", async (req, res) => {
             success: "User deleted successfully!"
         });
     } catch (err) {
-        res.status(500).json({
+        res.status(400).json({
             error: "Something went wrong",
         });
     }
@@ -105,7 +141,7 @@ app.patch("/user/:id", async (req, res) => {
             success: "Data updated successfully!"
         });
     } catch (err) {
-        res.status(500).json({
+        res.status(400).json({
             err
         });
     }
