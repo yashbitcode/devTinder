@@ -89,10 +89,11 @@ app.delete("/user/:id", async (req, res) => {
     }
 });
 
-app.patch("/user", async (req, res) => {
+app.patch("/user/:id", async (req, res) => {
     try {
+        const userId = req.params.id;
         const userData = req.body;
-        const user = await User.findByIdAndUpdate(userData.userId, userData, {
+        const user = await User.findByIdAndUpdate(userId, userData, {
             returnDocument: "after",
             runValidators: true
         });
@@ -100,12 +101,12 @@ app.patch("/user", async (req, res) => {
         console.log(user);
 
         return res.json({
-            id: userData.userId,
+            id: userId,
             success: "Data updated successfully!"
         });
     } catch (err) {
         res.status(500).json({
-            error: "Something went wrong",
+            err
         });
     }
 });
