@@ -1,5 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 const connect = require("./config/database");
 const User = require("./models/user");
 
@@ -7,26 +9,41 @@ const app = express();
 const PORT = 3000;
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.get("/", (req, res) => res.send("HI BRO!"));
+
+app.get("/profile", async (req, res) => {
+    try {
+        const { token } = req.cookies;
+        if(!token) throw Error("Invalid Token");
+
+        const verification = jwt.verify(token, process.env.JWT_SECRET);
+
+        const user = await User.findById(verification.userId).exec();
+
+        if (user) return res.json(user);
+        throw Error("User Doesn't exisit");
+    } catch (err) {
+        res.status(400).json({
+            error: err.message,
+        });
+    }
+});
+
 app.post("/signup", async (req, res) => {
     try {
-        const {
-            firstName,
-            lastName,
-            emailId,
-            password,
-        } = req.body;
+        const { firstName, lastName, emailId, password } = req.body;
 
         const passwordHash = await bcrypt.hash(password, 10);
 
         // const doc = new User(userData);
         // await doc.save();
         await User.insertOne({
-            firstName, 
+            firstName,
             lastName,
             emailId,
-            password: passwordHash
+            password: passwordHash,
         });
 
         res.send("User Created Successfully!");
@@ -38,21 +55,36 @@ app.post("/signup", async (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-    try {  
+    try {
         const { emailId, password } = req.body;
         const user = await User.findOne({
-            emailId
+            emailId,
         });
 
-        if(!user) throw new Error("Email doesn't exist");
+        if (!user) throw Error("Email doesn't exist");
         const passwordMatch = await bcrypt.compare(password, user.password);
 
-        if(passwordMatch) return res.json({
-            success: true,
-            message: "Login Successful!"
-        });
+        if (passwordMatch) {
+            const token = jwt.sign(
+                {
+                    userId: user._id,
+                },
+                process.env.JWT_SECRET, 
+                {
+                    expiresIn: "0d"
+                }
+            );
 
-        throw new Error("Password doesn't match with the email!");
+            res.cookie("token", token, {
+                expires: new Date(Date.now() + 10000)
+            });
+            return res.json({
+                success: true,
+                message: "Login Successful!",
+            });
+        }
+
+        throw Error("Password doesn't match with the email!");
     } catch (err) {
         res.status(400).json({
             error: err.message,
@@ -97,7 +129,7 @@ app.get("/userById/:id", async (req, res) => {
     try {
         const userId = req.params.id;
         const user = await User.findById(userId).exec();
-        
+
         if (user) return res.json(user);
 
         res.status(404).json({
@@ -116,7 +148,7 @@ app.delete("/user/:id", async (req, res) => {
         await User.findByIdAndDelete(userId).exec();
         res.json({
             id: userId,
-            success: "User deleted successfully!"
+            success: "User deleted successfully!",
         });
     } catch (err) {
         res.status(400).json({
@@ -131,43 +163,21 @@ app.patch("/user/:id", async (req, res) => {
         const userData = req.body;
         const user = await User.findByIdAndUpdate(userId, userData, {
             returnDocument: "after",
-            runValidators: true
+            runValidators: true,
         });
 
         console.log(user);
 
         return res.json({
             id: userId,
-            success: "Data updated successfully!"
+            success: "Data updated successfully!",
         });
     } catch (err) {
         res.status(400).json({
-            err
+            err,
         });
     }
 });
-
-// app.patch("/nnn", async (req, res) => {
-//     try {
-//         const userData = req.body;
-//         const user = await User.findOneAndUpdate({
-//             emailId: userData.emailId
-//         }, userData, {
-//             returnDocument: "after"
-//         });
-
-//         console.log(user);
-
-//         return res.json({
-//             id: userData.userId,
-//             success: "Data updated successfully!"
-//         });
-//     } catch (err) {
-//         res.status(500).json({
-//             error: "Something went wrong",
-//         });
-//     }
-// });
 
 connect()
     .then(() => {
