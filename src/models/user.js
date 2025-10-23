@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+const jwt = require("jsonwebtoken");
 
 const userSchema = new mongoose.Schema(
     {
@@ -21,16 +22,18 @@ const userSchema = new mongoose.Schema(
             trim: true,
             lowercase: true,
             validate(val) {
-                if(!validator.isEmail(val)) throw new Error("Not a valid email");
-            }
+                if (!validator.isEmail(val))
+                    throw new Error("Not a valid email");
+            },
             // match: [/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, "Invalid Email"]
         },
         password: {
             type: String,
             required: true,
             validate(val) {
-                if(!validator.isStrongPassword(val)) throw new Error("Not a Strong Password");
-            }
+                if (!validator.isStrongPassword(val))
+                    throw new Error("Not a Strong Password");
+            },
             // match: [/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/, "Password Invalid"]
         },
         age: {
@@ -47,8 +50,8 @@ const userSchema = new mongoose.Schema(
         photoUrl: {
             type: String,
             validate(val) {
-                if(!validator.isURL(val)) throw new Error("Invalid photo URL");
-            }
+                if (!validator.isURL(val)) throw new Error("Invalid photo URL");
+            },
         },
         about: {
             type: String,
@@ -61,7 +64,7 @@ const userSchema = new mongoose.Schema(
                     if (arr.length < 3) return true;
                     return false;
                 },
-                message: () => "Skills cannot be more than 3"
+                message: () => "Skills cannot be more than 3",
             },
         },
     },
@@ -69,6 +72,22 @@ const userSchema = new mongoose.Schema(
         timestamps: true,
     }
 );
+
+userSchema.methods.getJWT = async function () {
+    const token = jwt.sign(
+        {
+            userId: this._id,
+        },
+        process.env.JWT_SECRET,
+        {
+            expiresIn: "0d",
+        }
+    );
+};
+
+userSchema.methods.validatePasswordHash = async function (passInput) {
+    return await bcrypt.compare(passInput, this.password)
+};
 
 const User = mongoose.model("User", userSchema);
 module.exports = User;

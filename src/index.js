@@ -62,18 +62,10 @@ app.post("/login", async (req, res) => {
         });
 
         if (!user) throw Error("Email doesn't exist");
-        const passwordMatch = await bcrypt.compare(password, user.password);
+        const passwordMatch = user.validatePasswordHash(password);
 
         if (passwordMatch) {
-            const token = jwt.sign(
-                {
-                    userId: user._id,
-                },
-                process.env.JWT_SECRET, 
-                {
-                    expiresIn: "0d"
-                }
-            );
+            const token = user.getJWT();
 
             res.cookie("token", token, {
                 expires: new Date(Date.now() + 10000)
