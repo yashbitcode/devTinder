@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const connectionReqSchema = new mongoose.Schema({
     fromUserId: {
         type: mongoose.Types.ObjectId,
+        ref: "User",
         required: [true, "Sender id is required"]
     },
     toUserId: {
@@ -20,6 +21,10 @@ const connectionReqSchema = new mongoose.Schema({
 }, {
     timestamps: true
 });
+
+connectionReqSchema.statics.validateObjectId = function (id) {
+    return mongoose.isObjectIdOrHexString(id);
+};
 
 // connectionReqSchema.pre("save", function(next) {
 //     console.log(this);

@@ -7,11 +7,11 @@ const router = express.Router();
 router.post("/send/:status/:toUserId", ensureAuthenticated, async (req, res) => {
     try {
         const { _id: fromUserId } = req.user;
-        const toUserId = req.params.toUserId;
-        const status = req.params.status;
+        const { toUserId, status } = req.params;
 
         if (!toUserId) throw Error("Receiver id is required");
         if(!["interested", "ignored"].includes(status)) throw Error("Invalid status type");
+        if(!ConnectionReq.validateObjectId(toUserId)) throw Error("Not a valid receiver id");
         if(toUserId.toString() === fromUserId.toString()) throw Error("Sender and receiver can't be same");
 
         const existingReq = await ConnectionReq.findOne({
@@ -30,7 +30,6 @@ router.post("/send/:status/:toUserId", ensureAuthenticated, async (req, res) => 
         if(existingReq) throw Error("Request already exists");
         const requestedUser = await User.findById(toUserId);
 
-
         if (!requestedUser) throw Error("Receiver id is not valid");
 
         const request = new ConnectionReq({
@@ -39,7 +38,6 @@ router.post("/send/:status/:toUserId", ensureAuthenticated, async (req, res) => 
             status,
         });
 
-        // console.log(toUserId + '\n');
         await request.save();
         const requestDoc = request.toObject({
             getters: true,
@@ -53,6 +51,41 @@ router.post("/send/:status/:toUserId", ensureAuthenticated, async (req, res) => 
                 toUserId: requestDoc.toUserId,
                 status: requestDoc.status,
             },
+        });
+    } catch (error) {
+        res.status(400).json({
+            error: error.message,
+        });
+    }
+});
+
+/*
+    A --send-> B
+    B --accept/reject--> A
+*/
+
+router.patch("/review/:status/:reqId", ensureAuthenticated, async (req, res) => {
+    try {
+        const { _id: fromUserId } = req.user;
+        const { status, reqId } = req.params;
+        if(!["accepted", "rejected"].includes(status)) throw Error("Invalid status type");
+        if(!ConnectionReq.validateObjectId(reqId)) throw Error("Not a valid request id");
+
+        const doc = await ConnectionReq.findOneAndUpdate({
+            _id: reqId,
+            toUserId: fromUserId,
+            status: "interested"
+        }, {
+            status
+        }, {
+            returnDocument: "after"
+        });
+
+        if(!doc) throw Error("Connection request not found");
+
+        res.json({
+            sucess: true,
+            data: doc
         });
     } catch (error) {
         res.status(400).json({

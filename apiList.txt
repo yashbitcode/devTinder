@@ -16,7 +16,7 @@ PATCH /profile/password
 requestRouter:
 POST /request/send/interested/:userId
 POST /request/send/ignore/:userId
-POST /request/send/accepted/:userId
-POST /request/send/rejected/:userId
+PATCH /request/send/accepted/:userId
+PATCH /request/send/rejected/:userId
 
 status: ignored, interested, accepted, rejected

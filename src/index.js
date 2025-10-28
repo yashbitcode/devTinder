@@ -5,7 +5,6 @@ const authRouter = require("./routes/auth.routes");
 const profileRouter = require("./routes/profile.routes");
 const userRouter = require("./routes/user.routes");
 const requestRouter = require("./routes/request.routes");
-// const User = require("./models/user.model");
 const { authMiddleware } = require("./middlewares/auth.middleware");
 
 const app = express();
@@ -16,8 +15,8 @@ app.use(cookieParser());
 app.use(authMiddleware);
 
 app.use("/", authRouter);
+app.use("/user", userRouter);
 app.use("/profile", profileRouter);
-app.use("/", userRouter);
 app.use("/request", requestRouter);
 
 // app.post("/user", async (req, res) => {
