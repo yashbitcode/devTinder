@@ -1,7 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const router = express.Router();
-const User = require("../models/user");
+const User = require("../models/user.model");
 
 router.post("/signup", async (req, res) => {
     try {
@@ -38,14 +38,13 @@ router.post("/login", async (req, res) => {
 
         if (passwordMatch) {
             const token = await user.getJWT();
-
-            console.log(token)
-
             res.cookie("token", token, {
                 // expires: new Date(Date.now() + 10000),
             });
+
             return res.json({
                 success: true,
+                token,
                 message: "Login Successful!",
             });
         }

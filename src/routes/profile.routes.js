@@ -1,13 +1,12 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const router = express.Router();
-const User = require("../models/user");
-const authMiddleware = require("../middlewares/authMiddleware");
 const { validateUserData } = require("../utils/helpers");
+const { ensureAuthenticated } = require("../middlewares/auth.middleware");
 
-router.get("/view", authMiddleware, async (req, res) => {
+router.get("/view", ensureAuthenticated, async (req, res) => {
     try {
-        const user = req.user;        
+        const user = req.user;  
         res.json(user);
     } catch (err) {
         res.status(400).json({
@@ -16,7 +15,7 @@ router.get("/view", authMiddleware, async (req, res) => {
     }
 });
 
-router.patch("/edit", authMiddleware, async (req, res) => {
+router.patch("/edit", ensureAuthenticated, async (req, res) => {
     try {
         const userData = req.body;
         if(!validateUserData(userData)) throw Error("Invalid fields passed");
@@ -30,8 +29,6 @@ router.patch("/edit", authMiddleware, async (req, res) => {
         //     runValidators: true,
         // });
 
-        console.log(user);
-
         return res.json({
             id: userData._id,
             success: "Data updated successfully!",
@@ -43,7 +40,7 @@ router.patch("/edit", authMiddleware, async (req, res) => {
     }
 });
 
-router.patch("/password", authMiddleware, async (req, res) => {
+router.patch("/password", ensureAuthenticated, async (req, res) => {
     try {  
         const user = req.user;
         const { oldPassword, newPassword } = req.body;

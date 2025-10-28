@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../models/user");
-const authMiddleware = require("../middlewares/authMiddleware");
+const User = require("../models/user.model");
+const { ensureAuthenticated } = require("../middlewares/auth.middleware");
 
-router.get("/feed", authMiddleware, async (req, res) => {
+router.get("/feed", ensureAuthenticated, async (req, res) => {
     try {
         const allUsers = await User.find({});
 

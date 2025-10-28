@@ -19,4 +19,4 @@ POST /request/send/ignore/:userId
 POST /request/send/accepted/:userId
 POST /request/send/rejected/:userId
 
-status: ignore, interested, accepted, rejected
+status: ignored, interested, accepted, rejected
