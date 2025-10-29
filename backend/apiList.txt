@@ -1,0 +1,22 @@
+authRouter:
+POST /signup
+POST /login
+POST /logout
+
+userRouter:
+GET /user/feed
+GET /user/connections
+GET /user/requests
+
+profileRouter:
+GET /profile/view
+PATCH /profile/update
+PATCH /profile/password
+
+requestRouter:
+POST /request/send/interested/:userId
+POST /request/send/ignore/:userId
+PATCH /request/send/accepted/:userId
+PATCH /request/send/rejected/:userId
+
+status: ignored, interested, accepted, rejected
