@@ -3,11 +3,13 @@ const User = require("../models/user.model");
 
 const authMiddleware = async (req, res, next) => {
     try {
-        const tokenHeader = req.get("Authorization");
-        if (!tokenHeader) return next();
-        if(!tokenHeader.startsWith("Bearer")) throw Error("Token should starts with Bearer");
+        const { token } = req.cookies;
+        if (!token) return next();
 
-        const verification = jwt.verify(tokenHeader.split(" ")[1], process.env.JWT_SECRET);
+        // if(!tokenHeader.startsWith("Bearer")) throw Error("Token should starts with Bearer");
+
+        // const verification = jwt.verify(tokenHeader.split(" ")[1], process.env.JWT_SECRET);
+        const verification = jwt.verify(token, process.env.JWT_SECRET);
         const user = await User.findById(verification.userId);
 
         req.user = user;

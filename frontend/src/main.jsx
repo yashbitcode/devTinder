@@ -3,11 +3,12 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Login from "./components/Auth/Login/Login";
+import Login from "./pages/Login.jsx";
 import Feed from "./pages/Feed";
 import { Provider } from 'react-redux';
 import { store } from "./store/appStore.js";
 import Protected from './components/Protected/Protected.jsx';
+import SignUp from './pages/SignUp.jsx';
 
 const router = createBrowserRouter([
     {
@@ -34,7 +35,7 @@ const router = createBrowserRouter([
                 path: "/signup",
                 element: (
                     <Protected reqAuth={false}>
-                        <div>signUP</div>
+                        <SignUp />
                     </Protected>
                 )
             }

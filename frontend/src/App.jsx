@@ -22,11 +22,12 @@ function App() {
 
     return !loading && (
         <>
-            <div className="bg-primary text-white relative pt-4 px-4 min-h-screen">
+            <div className="bg-primary text-white relative py-4 px-4 min-h-screen">
                 <NavBar />
                 <Outlet />
+                <Footer />
             </div>
-            <Footer />
+            
         </>
     );
 };

@@ -1,2 +1,4 @@
-export { default as CustomInput } from "./CustomInput";
-export { default as CustomButton } from "./CustomButton";
+import CustomInput from "./CustomInput";
+import CustomButton from "./CustomButton";
+
+export { CustomButton, CustomInput };

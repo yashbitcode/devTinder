@@ -1,5 +1,6 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 const connect = require("./config/database");
 const authRouter = require("./routes/auth.routes");
 const profileRouter = require("./routes/profile.routes");
@@ -9,9 +10,14 @@ const { authMiddleware } = require("./middlewares/auth.middleware");
 
 const app = express();
 const PORT = 3000;
+const corsOptions = {
+    origin: "http://localhost:5173",
+    credentials: true 
+};
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors(corsOptions));
 app.use(authMiddleware);
 
 app.use("/", authRouter);
