@@ -1,15 +1,23 @@
 import { useRef } from "react";
-import CustomButton from "../../../custom-components/CustomButton";
-import CustomInput from "../../../custom-components/CustomInput";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { addUser } from "../../../store/store-slices/userSlice";
 import { useNavigate } from "react-router-dom";
+import { CustomButton, CustomInput } from "../../../custom-components";
 
+/* 
+    protected
+        - main token even after refresh
+        - auth wrapper if token valid fetch the user and update
+
+        auth wrapper:
+            - reqAuth -> T(protected)/F(un-pro.)
+            - XNOR -> reqAuth and user
+*/
 const Login = () => {
     const formRef = useRef(null);
     const dispatch = useDispatch();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -25,7 +33,7 @@ const Login = () => {
             const res = await axios.post("http://localhost:3000/login", payload, {
                 withCredentials: true
             });
-            console.log(res.data.user)
+
             dispatch(addUser(res.data.user));
             navigate("/");
         } catch (error) {
