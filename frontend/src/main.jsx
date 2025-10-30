@@ -2,13 +2,11 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Login from "./pages/Login.jsx";
-import Feed from "./pages/Feed";
+import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import { Provider } from 'react-redux';
 import { store } from "./store/appStore.js";
 import Protected from './components/Protected/Protected.jsx';
-import SignUp from './pages/SignUp.jsx';
+import { Feed, Login, SignUp, Profile } from "./pages/index.js";
 
 const router = createBrowserRouter([
     {
@@ -38,7 +36,15 @@ const router = createBrowserRouter([
                         <SignUp />
                     </Protected>
                 )
-            }
+            },
+            {
+                path: "/profile",
+                element: (
+                    <Protected>
+                        <Profile />
+                    </Protected>
+                )
+            },
         ]
     }
 ]);

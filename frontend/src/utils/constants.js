@@ -1,0 +1,1 @@
+export const defaultPic = "https://cdn.pixabay.com/photo/2014/03/24/13/49/avatar-294480_1280.png";

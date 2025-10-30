@@ -3,6 +3,7 @@ import { CustomInput, CustomButton } from "../../custom-components";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { removeUser } from "../../store/store-slices/userSlice";
+import { defaultPic } from "../../utils/constants";
 
 const NavBar = () => {
     const user = useSelector((state) => state.userReducer.user);
@@ -31,9 +32,9 @@ const NavBar = () => {
                 user && (
                     <div className="flex gap-4 items-center">
                         <CustomInput placeholder={"Search"} />
-                        <div>
+                        <div className="flex gap-5">
                             <div className="w-10 h-10 flex items-center">
-                                <img className="rounded-full" src={user.photoUrl} alt="profile-pic" />
+                                <img className="rounded-full" src={user.photoUrl || defaultPic} alt="profile-pic" />
                             </div>
                             {/* <CustomButton onClick={() => navigate("/login")}>Logout</CustomButton> */}
                             <CustomButton onClick={logout}>Logout</CustomButton>
