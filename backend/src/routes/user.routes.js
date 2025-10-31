@@ -11,7 +11,7 @@ router.get("/requests", ensureAuthenticated, async (req, res) => {
         const data = await ConnectionReq.find({
             toUserId: userId,
             status: "interested",
-        }).populate("fromUserId", ["_id", "firstName", "lastName", "about"]);
+        }).populate("fromUserId", ["_id", "firstName", "lastName", "about", "photoUrl"]);
 
         // aggregation pipeline to get the from user info
         // const data = await ConnectionReq.aggregate([

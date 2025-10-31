@@ -7,6 +7,7 @@ import { Provider } from 'react-redux';
 import { store } from "./store/appStore.js";
 import Protected from './components/Protected/Protected.jsx';
 import { Feed, Login, SignUp, Profile, AllConnections } from "./pages/index.js";
+import AllRequests from './pages/AllRequests.jsx'
 
 const router = createBrowserRouter([
     {
@@ -50,6 +51,14 @@ const router = createBrowserRouter([
                 element: (
                     <Protected>
                         <Profile />
+                    </Protected>
+                )
+            },
+            {
+                path: "/requests",
+                element: (
+                    <Protected>
+                        <AllRequests />
                     </Protected>
                 )
             },

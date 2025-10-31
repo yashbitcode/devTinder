@@ -4,6 +4,8 @@ import ConnectionCard from "../components/Connections/ConnectionCard";
 
 const AllConnections = () => {
     const [connections, setConnections] = useState(null);
+    const [loading, setLoading] = useState(true);
+
     const fetchConnections = async () => {
         try {
             const res = await axios.get("http://localhost:3000/user/connections", {
@@ -13,6 +15,8 @@ const AllConnections = () => {
             setConnections(res.data);
         } catch (error) {
             console.error(error);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -20,7 +24,7 @@ const AllConnections = () => {
         fetchConnections();
     }, []);
     
-    return (
+    return !loading && (
         <div className="w-full max-w-xl mx-auto">
             <h1 className="text-4xl text-center">Connections</h1>
             <div className="flex flex-col gap-4 mt-7">

@@ -18,8 +18,8 @@ const FeedCard = ({
                 <p>{about}</p>
 
                 <div className="mt-2 flex gap-3">
-                    <CustomButton className={"bg-pink-500"}>Interested</CustomButton>
-                    <CustomButton className={"bg-purple-700"}>Ignore</CustomButton>
+                    <CustomButton className={"bg-pink-500 rounded-xl"}>Interested</CustomButton>
+                    <CustomButton className={"bg-purple-700 rounded-xl"}>Ignore</CustomButton>
                 </div>
             </div>
         </div>

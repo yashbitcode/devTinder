@@ -23,8 +23,8 @@ const NavBar = () => {
             navigate("/login", {
                 replace: true
             });
-
-            console.log(window.history)
+            
+            setShowMenu(false);
         } catch (error) {
             console.error(error.response.data.message);
         }
@@ -47,7 +47,7 @@ const NavBar = () => {
 
                             {
                                 showMenu && (
-                                    <ul className="p-4 bg-primary-light absolute -right-4.5 -bottom-50 text-[1.1rem] flex flex-col gap-1">
+                                    <ul className="p-4 rounded-md bg-primary-light absolute -right-4.5 -bottom-50 text-[1.1rem] flex flex-col gap-1">
                                         <Link to={'/profile'}>
                                             <li>
                                                 Profile
