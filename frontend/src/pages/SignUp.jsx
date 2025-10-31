@@ -12,6 +12,7 @@ import { CustomButton, CustomInput } from "../custom-components";
             - reqAuth -> T(protected)/F(un-pro.)
             - XNOR -> reqAuth and user
 */
+
 const SignUp = () => {
     const formRef = useRef(null);
     const navigate = useNavigate();

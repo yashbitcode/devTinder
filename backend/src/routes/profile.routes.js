@@ -7,7 +7,6 @@ const { ensureAuthenticated } = require("../middlewares/auth.middleware");
 router.get("/view", ensureAuthenticated, async (req, res) => {
     try {
         const user = req.user;  
-        console.log(user);
         res.json(user);
     } catch (err) {
         res.status(400).json({

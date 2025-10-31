@@ -19,6 +19,10 @@ const AllRequests = () => {
         }
     };
 
+    const removeReq = (id) => {
+        setRequests((prev) => prev.filter((el) => el._id !== id));
+    };
+
     useEffect(() => {
         fetchRequests();
     }, []);
@@ -29,11 +33,10 @@ const AllRequests = () => {
             <div className="flex flex-col gap-4 mt-7">
                 {
                     requests ? requests.map((el) => (
-                        <RequestCard key={el._id} {...el.fromUserId} />
+                        <RequestCard key={el._id} {...el.fromUserId} removeReq={removeReq} reqId={el._id} />
                     )) : (
                         <div className="bg-white px-3 py-2 text-2xl rounded-md">No Requests</div>
                     )
-
                 }
             </div>
         </div>

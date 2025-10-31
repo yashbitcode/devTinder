@@ -37,7 +37,6 @@ router.post("/login", async (req, res) => {
 
         if (!user) throw Error("Email doesn't exist");
         const passwordMatch = await user.validatePasswordHash(password);
-        console.log(passwordMatch)
 
         if (passwordMatch) {
             const token = await user.getJWT();
