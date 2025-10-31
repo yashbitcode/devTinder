@@ -88,6 +88,10 @@ router.get("/connections", ensureAuthenticated, async (req, res) => {
                                 _id: 1,
                                 firstName: 1,
                                 lastName: 1,
+                                photoUrl: 1,
+                                age: 1,
+                                gender: 1,
+                                about: 1
                             },
                         },
                     ],

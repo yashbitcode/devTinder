@@ -21,14 +21,14 @@ function App() {
     }, []);
 
     return !loading && (
-        <>
-            <div className="bg-primary text-white relative py-4 px-4 min-h-screen">
+            <div className="bg-primary relative flex flex-col text-white py-4 px-4 min-h-screen h-full">
                 <NavBar />
-                <Outlet />
-                <Footer />
+                <main className="grow">
+                    <Outlet />
+                </main>
+                <Footer />               
             </div>
-            
-        </>
+
     );
 };
 

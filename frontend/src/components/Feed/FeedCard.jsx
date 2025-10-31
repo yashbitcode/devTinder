@@ -10,7 +10,7 @@ const FeedCard = ({
     return (
         <div className="w-full max-w-2xs rounded-md bg-primary-light">
             <div className="w-full max-h-[330px] overflow-hidden">
-                <img src={photoUrl || defaultPic} alt="photo-pic" className="rounded-t-md w-full object-cover" />
+                <img src={photoUrl || defaultPic} alt="photo-pic" className="rounded-t-md w-full h-full object-cover" />
             </div>
 
             <div className="p-2">

@@ -6,7 +6,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import { Provider } from 'react-redux';
 import { store } from "./store/appStore.js";
 import Protected from './components/Protected/Protected.jsx';
-import { Feed, Login, SignUp, Profile } from "./pages/index.js";
+import { Feed, Login, SignUp, Profile, AllConnections } from "./pages/index.js";
 
 const router = createBrowserRouter([
     {
@@ -18,6 +18,14 @@ const router = createBrowserRouter([
                 element: (
                     <Protected>
                         <Feed />
+                    </Protected>
+                )
+            },
+            {
+                path: "/connections",
+                element: (
+                    <Protected>
+                        <AllConnections />
                     </Protected>
                 )
             },
