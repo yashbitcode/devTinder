@@ -12,13 +12,19 @@ const app = express();
 const PORT = 3000;
 const corsOptions = {
     origin: "http://localhost:5173",
-    credentials: true 
+    credentials: true,
 };
 
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors(corsOptions));
 app.use(authMiddleware);
+
+app.use((req, res, next) => {
+    res.setHeader("Cache-Control", "no-store");
+    res.setHeader("Pragma", "no-cache");
+    next();
+});
 
 app.use("/", authRouter);
 app.use("/user", userRouter);

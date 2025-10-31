@@ -7,6 +7,7 @@ const { ensureAuthenticated } = require("../middlewares/auth.middleware");
 router.get("/view", ensureAuthenticated, async (req, res) => {
     try {
         const user = req.user;  
+        console.log(user);
         res.json(user);
     } catch (err) {
         res.status(400).json({
@@ -32,6 +33,7 @@ router.patch("/edit", ensureAuthenticated, async (req, res) => {
         return res.json({
             id: userData._id,
             success: "Data updated successfully!",
+            user: user.toObject({ getters: true })
         });
     } catch (err) {
         res.status(400).json({

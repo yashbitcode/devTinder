@@ -1,22 +1,38 @@
-import { useRef } from "react";
-import { useSelector } from "react-redux";
+import { useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { CustomButton, CustomInput } from "../custom-components";
+import axios from "axios";
+import { addUser } from "../store/store-slices/userSlice";
 
 const Profile = () => {
     const formRef = useRef(null);
     const user = useSelector((state) => state.userReducer.user);
+    const dispatch = useDispatch();
+    const [error, setError] = useState("");
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
+        setError("");
         e.preventDefault();
-        
+
         const formData = new FormData(formRef.current);
         const payload = {};
 
-        for(const [val, key] of formData) {
-            payload[val] = key;
+        for (const [key, val] of formData) {
+            if(val) payload[key] = val;
         }
 
-        console.log(payload)
+        console.log(payload);
+
+        try {
+            const res = await axios.patch("http://localhost:3000/profile/edit", payload, {
+                withCredentials: true
+            });
+
+            console.log(res.data.user)
+            dispatch(addUser(res.data.user));
+        } catch (error) {
+            setError(error.response.data.error);
+        }
     };
 
     return (
@@ -29,6 +45,12 @@ const Profile = () => {
                 <CustomInput name={"gender"} label={"Gender"} defaultValue={user.gender} />
                 <CustomInput name={"photoUrl"} label={"Photo URL"} defaultValue={user.photoUrl} />
                 <CustomInput name={"about"} label={"About"} defaultValue={user.about} />
+
+                {
+                    error && (
+                        <span className="text-red-500">{error}</span>
+                    )
+                }
 
                 <CustomButton type="submit" className={"rounded-md"}>Update Profile</CustomButton>
             </form>

@@ -3,7 +3,8 @@ const fieldsCanBeUpdated = [
     "lastName",
     "age",
     "photoUrl",
-    "abouts",
+    "about",
+    "gender",
     "skills",
 ];
 

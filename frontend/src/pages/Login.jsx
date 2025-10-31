@@ -34,8 +34,8 @@ const Login = () => {
                 withCredentials: true
             });
 
-            dispatch(addUser(res.data.user));
-            navigate("/");
+            dispatch(addUser(res.data.user));            
+            navigate("/", { replace: true });
         } catch (error) {
             console.log(error.response.data.error)
         }

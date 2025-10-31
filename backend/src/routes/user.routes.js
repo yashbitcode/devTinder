@@ -121,7 +121,6 @@ router.get("/feed", ensureAuthenticated, async (req, res) => {
 
         limit = limit <= 10 ? limit : 10;
 
-        console.log(page, limit);
         const allConnections = await ConnectionReq.find({
             $or: [
                 {
@@ -135,17 +134,33 @@ router.get("/feed", ensureAuthenticated, async (req, res) => {
 
         const excludedUsers = new Set();
 
-        allConnections.forEach((el) => {
-            excludedUsers.add(el.fromUserId.toString())
-            excludedUsers.add(el.toUserId.toString())
+        if(allConnections.length) allConnections.forEach((el) => {
+            excludedUsers.add(el.fromUserId.toString());
+            excludedUsers.add(el.toUserId.toString());
         });
 
-        const feedUsers = await User.find({
-            _id: {
-                $nin: [...excludedUsers]
-            }
-        }, "firstName lastName photoUrl about skills").limit(limit).skip(limit * (page - 1));
-        
+        else excludedUsers.add(loggedInUser._id);
+
+        const feedUsers = await User.find(
+            {
+                $and: [
+                    {
+                        _id: {
+                            $nin: [...excludedUsers],
+                        },
+                    },
+                    {
+                        _id: {
+                            $ne: loggedInUser._id
+                        }
+                    }
+                ],
+            },
+            "firstName lastName photoUrl about skills"
+        )
+            .limit(limit)
+            .skip(limit * (page - 1));
+
         /* 
 
         - users -> ID 
