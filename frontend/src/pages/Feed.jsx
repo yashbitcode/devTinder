@@ -1,4 +1,4 @@
-import ConnReq from "../services/connectionReqService";
+import User from "../services/userService";
 import { useEffect, useState } from "react";
 import FeedCard from "../components/Feed/FeedCard";
 import { toast } from "react-toastify";
@@ -8,8 +8,8 @@ const Feed = () => {
     const [loading, setLoading] = useState(true);
 
     const fetchFeed = async () => {
-        const res = await ConnReq.getFeed();
-        
+        const res = await User.getFeed();
+
         if (res?.data?.success) {
             setUserFeed(res.data.feedUsers);
         } else {

@@ -8,12 +8,12 @@ router.get("/view", ensureAuthenticated, async (req, res) => {
     try {
         const user = req.user;  
         res.json({
-            sucess: true,
+            success: true,
             user
         });
     } catch (err) {
         res.status(400).json({
-            sucess: false,
+            success: false,
             error: err.message,
         });
     }

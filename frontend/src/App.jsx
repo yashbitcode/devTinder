@@ -14,8 +14,8 @@ function App() {
     useEffect(() => {
         User.getUserProfile()
             .then((res) => {
-                console.log(res)
-                if (res.data.success) dispatch(addUser(res.data))
+                console.log(res.data.success)
+                if (res.data.success) dispatch(addUser(res.data.user))
             })
             .finally(() => setLoading(false));
     }, []);

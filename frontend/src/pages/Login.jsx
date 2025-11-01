@@ -47,7 +47,10 @@ const Login = () => {
             <form ref={formRef} className="w-full flex flex-col gap-3.5" onSubmit={handleLogin}>
                 <CustomInput name={"emailId"} label={"Email"} />
                 <CustomInput name={"password"} label={"Password"} />
-                <Link to={"/forgot-password"} className={"mt-2 hover:underline"}>Forgot Password?</Link>
+                <div className="mt-2 flex gap-2">
+                    <Link to={"/signup"} className={"hover:underline"}>New Here?</Link>
+                    <Link to={"/forgot-password"} className={"hover:underline"}>Forgot Password?</Link>
+                </div>
                 <CustomButton type="submit" className={"rounded-md"}>Login</CustomButton>
             </form>
         </div>

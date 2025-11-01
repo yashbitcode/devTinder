@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
-const Protected = ({ reqAuth = true, children }) => {
+const Protected = ({ reqAuth = true }) => {
     const user = !!useSelector((state) => state.userReducer.user);
 
     if(user && !reqAuth) return <Navigate to="/" replace />;
@@ -10,7 +10,7 @@ const Protected = ({ reqAuth = true, children }) => {
     // if(reqAuth && (user !== reqAuth)) return <Navigate to="/login" replace />;
     // if(!reqAuth && (user !== reqAuth)) return <Navigate to="/" replace />;
 
-    return children;
+    return <Outlet />;
 };
 
 export default Protected;

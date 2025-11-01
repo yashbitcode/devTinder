@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CustomButton, CustomInput } from "../custom-components";
 import Auth from "../services/authService";
 import { toast } from "react-toastify";
@@ -44,6 +44,7 @@ const SignUp = () => {
                 <CustomInput name={"lastName"} label={"Last Name"} />
                 <CustomInput name={"emailId"} label={"Email"} />
                 <CustomInput name={"password"} label={"Password"} />
+                <Link to={"/login"} className={"hover:underline mt-2"}>Already Have An Account?</Link>
                 <CustomButton type="submit" className={"rounded-md"}>Sign Up</CustomButton>
             </form>
         </div>

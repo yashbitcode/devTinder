@@ -11,7 +11,7 @@ const AllConnections = () => {
         const res = await ConnReq.getAllConnections();
         
         if(res?.data?.success) {
-            setConnections(res.data);
+            setConnections(res.data.data);
             toast.success(res.message);
         } else {
             toast.error(res?.response?.data?.error || "Something went wrong")
