@@ -1,23 +1,26 @@
-import axios from "axios";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { addFeed } from "../store/store-slices/feedSlice";
+import ConnReq from "../services/connectionReqService";
+import { useEffect, useState } from "react";
 import FeedCard from "../components/Feed/FeedCard";
+import { toast } from "react-toastify";
 
 const Feed = () => {
-    const userFeed = useSelector((state) => state.feedReducer.feed);
-    const dispatch = useDispatch();
+    const [userFeed, setUserFeed] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     const fetchFeed = async () => {
-        try {
-            const res = await axios.get("http://localhost:3000/user/feed", {
-                withCredentials: true
-            });
-
-            dispatch(addFeed(res.data));
-        } catch (error) {
-            console.error(error.response.data.message);
+        const res = await ConnReq.getFeed();
+        
+        if (res?.data?.success) {
+            setUserFeed(res.data.feedUsers);
+        } else {
+            toast.error(res?.response?.data?.error || "Something went wrong")
         }
+
+        setLoading(false);
+    };
+
+    const removeUser = (id) => {
+        setUserFeed((prev) => prev.filter((el) => el._id !== id));
     };
 
     useEffect(() => {
@@ -26,11 +29,20 @@ const Feed = () => {
     }, []);
 
     return (
-        <div className="flex gap-4">
+        <div>
+            <h1 className="text-4xl text-center mb-5">Feed</h1>
             {
-                userFeed?.map((el) => (
-                    <FeedCard key={el._id} {...el} />
-                ))
+                !loading && (
+                    <div className="flex gap-4">
+                        {
+                            userFeed?.length > 0 ? userFeed.map((el) => (
+                                <FeedCard key={el._id} removeUser={removeUser} {...el} />
+                            )) : (
+                                <div className="bg-white text-black w-fit mx-auto px-3 py-2 text-2xl rounded-md">No Feed</div>
+                            )
+                        }
+                    </div>
+                )
             }
         </div>
     );

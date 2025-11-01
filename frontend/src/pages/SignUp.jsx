@@ -1,7 +1,8 @@
 import { useRef } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { CustomButton, CustomInput } from "../custom-components";
+import Auth from "../services/authService";
+import { toast } from "react-toastify";
 
 /* 
     protected
@@ -27,14 +28,12 @@ const SignUp = () => {
             payload[key] = val;
         }
 
-        try {
-            await axios.post("http://localhost:3000/signup", payload, {
-                withCredentials: true
-            });
-            
+        const res = await Auth.createAccount(payload);
+        if(res?.data?.success) {
+            toast.success(res.data.message);
             navigate("/login");
-        } catch (error) {
-            console.log(error.response.data.error)
+        } else {
+            toast.error(res?.response?.data?.error || "Something went wrong")
         }
     }
     return (

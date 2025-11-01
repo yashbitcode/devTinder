@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { CustomInput, CustomButton } from "../../custom-components";
+import { CustomButton } from "../../custom-components";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { removeUser } from "../../store/store-slices/userSlice";
@@ -26,7 +26,7 @@ const NavBar = () => {
             
             setShowMenu(false);
         } catch (error) {
-            console.error(error.response.data.message);
+            console.error(error);
         }
     };
 
@@ -38,7 +38,7 @@ const NavBar = () => {
             {
                 user && (
                     <div className="flex gap-4 items-center">
-                        <CustomInput placeholder={"Search"} />
+                        <h1 className="text-xl">Welcome, {user.firstName}</h1>
                         <div className="flex gap-5 items-center relative">
                             <CustomButton className="size-12 flex p-0 bg-transparent items-center" onClick={() => setShowMenu(!showMenu)}>
                                 <img className="rounded-full w-full h-full object-cover" src={user.photoUrl || defaultPic} alt="profile-pic" />

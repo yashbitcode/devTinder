@@ -1,6 +1,7 @@
-import axios from "axios";
 import { CustomButton } from "../../custom-components";
 import { defaultPic } from "../../utils/constants";
+import ConnReq from "../../services/connectionReqService";
+import { toast } from "react-toastify";
 
 const RequestCard = ({
     firstName,
@@ -11,14 +12,13 @@ const RequestCard = ({
     removeReq
 }) => {
     const handleReview = async (status) => {
-        try {
-            await axios.patch(`http://localhost:3000/request/review/${status}/${reqId}`, {}, {
-                withCredentials: true
-            });
+        const res = await ConnReq.reviewRequest(status, reqId);
 
+        if (res?.data?.success) {
+            toast.success(res.data.message);
             removeReq(reqId);
-        } catch(error) {
-            console.error(error);
+        } else {
+            toast.error(res?.response?.data?.error || "Something went wrong")
         }
     };
 

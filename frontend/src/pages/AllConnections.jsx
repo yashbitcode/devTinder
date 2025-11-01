@@ -1,24 +1,24 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import ConnReq from "../services/connectionReqService";
 import ConnectionCard from "../components/Connections/ConnectionCard";
+import { toast } from "react-toastify";
 
 const AllConnections = () => {
     const [connections, setConnections] = useState(null);
     const [loading, setLoading] = useState(true);
 
     const fetchConnections = async () => {
-        try {
-            const res = await axios.get("http://localhost:3000/user/connections", {
-                withCredentials: true
-            });
-
+        const res = await ConnReq.getAllConnections();
+        
+        if(res?.data?.success) {
             setConnections(res.data);
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
+            toast.success(res.message);
+        } else {
+            toast.error(res?.response?.data?.error || "Something went wrong")
         }
-    }
+
+        setLoading(false);
+    };
 
     useEffect(() => {
         fetchConnections();
@@ -32,7 +32,7 @@ const AllConnections = () => {
                     connections ? connections.map((el) => (
                         <ConnectionCard key={el.friend._id} {...el.friend} />
                     )) : (
-                        <div className="bg-white px-3 py-2 text-2xl rounded-md">No Connections</div>
+                        <div className="bg-white px-3 py-2 text-2xl rounded-md">No Connection Found</div>
                     )
 
                 }

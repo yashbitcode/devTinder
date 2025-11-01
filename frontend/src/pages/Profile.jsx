@@ -1,8 +1,9 @@
 import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomButton, CustomInput } from "../custom-components";
-import axios from "axios";
+import User from "../services/userService";
 import { addUser } from "../store/store-slices/userSlice";
+import { toast } from "react-toastify";
 
 const Profile = () => {
     const formRef = useRef(null);
@@ -18,20 +19,17 @@ const Profile = () => {
         const payload = {};
 
         for (const [key, val] of formData) {
-            if(val) payload[key] = val;
+            if (val) payload[key] = val;
         }
 
-        console.log(payload);
+        const res = await User.updateUserProfile(payload);
 
-        try {
-            const res = await axios.patch("http://localhost:3000/profile/edit", payload, {
-                withCredentials: true
-            });
-
-            console.log(res.data.user)
+        if (res?.data?.sucess) {
             dispatch(addUser(res.data.user));
-        } catch (error) {
-            setError(error.response.data.error);
+            toast.success(res.data.message);
+
+        } else {
+            toast(res?.response?.data?.error || "Something went wrong");
         }
     };
 

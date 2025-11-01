@@ -1,9 +1,10 @@
 import { useRef } from "react";
-import axios from "axios";
 import { useDispatch } from "react-redux";
 import { addUser } from "../store/store-slices/userSlice";
 import { useNavigate } from "react-router-dom";
 import { CustomButton, CustomInput } from "../custom-components";
+import Auth from "../services/authService";
+import { toast } from "react-toastify";
 
 /* 
     protected
@@ -29,15 +30,15 @@ const Login = () => {
             payload[key] = val;
         }
 
-        try {
-            const res = await axios.post("http://localhost:3000/login", payload, {
-                withCredentials: true
-            });
+        const res = await Auth.loginAccount(payload);
 
-            dispatch(addUser(res.data.user));            
+        if(res?.data?.success) {
+            dispatch(addUser(res.data.user));
+            toast.success(res.data.message);
+
             navigate("/", { replace: true });
-        } catch (error) {
-            console.log(error.response.data.error)
+        } else {
+            toast.error(res?.response?.data?.error || "Something went wrong")
         }
     }
     return (
