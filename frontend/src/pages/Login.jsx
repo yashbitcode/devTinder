@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { useDispatch } from "react-redux";
 import { addUser } from "../store/store-slices/userSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CustomButton, CustomInput } from "../custom-components";
 import Auth from "../services/authService";
 import { toast } from "react-toastify";
@@ -47,6 +47,7 @@ const Login = () => {
             <form ref={formRef} className="w-full flex flex-col gap-3.5" onSubmit={handleLogin}>
                 <CustomInput name={"emailId"} label={"Email"} />
                 <CustomInput name={"password"} label={"Password"} />
+                <Link to={"/forgot-password"} className={"mt-2 hover:underline"}>Forgot Password?</Link>
                 <CustomButton type="submit" className={"rounded-md"}>Login</CustomButton>
             </form>
         </div>

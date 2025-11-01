@@ -45,6 +45,7 @@ router.post("/send/:status/:toUserId", ensureAuthenticated, async (req, res) => 
 
         res.json({
             sucess: true,
+            message: status[0].toUpperCase() + status.substring(1) + " request sent",
             data: {
                 _id: requestDoc._id,
                 fromUserId: requestDoc.fromUserId,
@@ -54,6 +55,7 @@ router.post("/send/:status/:toUserId", ensureAuthenticated, async (req, res) => 
         });
     } catch (error) {
         res.status(400).json({
+            success: false,
             error: error.message,
         });
     }
@@ -85,10 +87,12 @@ router.patch("/review/:status/:reqId", ensureAuthenticated, async (req, res) => 
 
         res.json({
             sucess: true,
+            message: status[0].toUpperCase() + status.substring(1) + " request sent",
             data: doc
         });
     } catch (error) {
         res.status(400).json({
+            success: false,
             error: error.message,
         });
     }

@@ -42,6 +42,7 @@ router.get("/requests", ensureAuthenticated, async (req, res) => {
         });
     } catch (error) {
         res.status(400).json({
+            success: false,
             error: error.message,
         });
     }
@@ -109,9 +110,13 @@ router.get("/connections", ensureAuthenticated, async (req, res) => {
             },
         ]);
 
-        res.json(data);
+        res.json({
+            success: true,
+            data
+        });
     } catch (error) {
         res.status(400).json({
+            success: false,
             error: error.message,
         });
     }
@@ -232,9 +237,13 @@ router.get("/feed", ensureAuthenticated, async (req, res) => {
         //     }
         // ])
 
-        res.json(feedUsers);
+        res.json({
+            success: true,
+            feedUsers
+        });
     } catch (error) {
         res.status(400).json({
+            success: false,
             error: error.message,
         });
     }

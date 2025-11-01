@@ -20,9 +20,13 @@ router.post("/signup", async (req, res) => {
             photoUrl
         });
 
-        res.send("User Created Successfully!");
+        res.json({
+            success: true,
+            message: "User Created Successfully",
+        });
     } catch (err) {
         res.status(400).json({
+            success: false,
             error: err.message,
         });
     }
@@ -55,6 +59,7 @@ router.post("/login", async (req, res) => {
         throw Error("Password doesn't match with the email!");
     } catch (err) {
         res.status(400).json({
+            success: false,
             error: err.message,
         });
     }
@@ -72,7 +77,41 @@ router.post("/logout", ensureAuthenticated, async (req, res) => {
         });
     } catch (error) {
         res.status(400).json({
-            error: error.message,
+            success: false,
+            error: "Something went wrong",
+        });
+    }
+});
+
+router.patch("/password", async (req, res) => {
+    try {  
+        const { emailId, oldPassword, newPassword } = req.body;
+
+        const user = await User.findOne({
+            emailId
+        });
+
+        if(!user) throw Error("Email doesn't exist");
+
+        const isMatched = await bcrypt.compare(oldPassword, user.password);
+        if(!isMatched) throw Error("Wrong Old Password");
+
+        user.password = newPassword;
+
+        await user.validate(["password"]);
+
+        const newHash = await bcrypt.hash(newPassword, 10);
+        user.password = newHash;
+
+        await user.save();
+        res.json({
+            success: true,
+            message: "Password changed successfully!"
+        });
+    } catch (err) {
+        res.status(400).json({
+            success: false,
+            error: err.message,
         });
     }
 });
