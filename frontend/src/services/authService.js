@@ -29,19 +29,42 @@ class AuthService {
         }
     }
 
-    async loginAccount({
-        emailId,
-        password
-    }) {
+    async loginAccount({ emailId, password }) {
         try {
             const res = await axios.post(
                 this.baseUrl + apiEndpoints.login,
                 {
                     emailId,
-                    password
+                    password,
                 },
                 {
                     withCredentials: true,
+                }
+            );
+
+            return res;
+        } catch (error) {
+            return error;
+        }
+    }
+
+    async forgotPassword({
+        emailId,
+        oldPassword,
+        newPassword,
+        confirmPassword,
+    }) {
+        try {
+            const res = await axios.patch(
+                this.baseUrl + apiEndpoints.forgotPassword,
+                {
+                    emailId,
+                    oldPassword,
+                    newPassword,
+                    confirmPassword,
+                },
+                {
+                    withCredentials: true
                 }
             );
 

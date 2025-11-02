@@ -85,13 +85,14 @@ router.post("/logout", ensureAuthenticated, async (req, res) => {
 
 router.patch("/password", async (req, res) => {
     try {  
-        const { emailId, oldPassword, newPassword } = req.body;
+        const { emailId, oldPassword, newPassword, confirmPassword } = req.body;
 
         const user = await User.findOne({
             emailId
         });
 
         if(!user) throw Error("Email doesn't exist");
+        if(newPassword !== confirmPassword) throw Error("new pass. and confirm pass.not matching");
 
         const isMatched = await bcrypt.compare(oldPassword, user.password);
         if(!isMatched) throw Error("Wrong Old Password");

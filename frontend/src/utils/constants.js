@@ -13,7 +13,7 @@ export const apiEndpoints = {
     profile: "/profile/view",
     signUp: "/signup",
     login: "/login",
-    forgotPassword: "/profile/password",
+    forgotPassword: "/password",
 };
 
 export const validations = {
