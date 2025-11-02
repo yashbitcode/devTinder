@@ -32,11 +32,11 @@ export const validations = {
         required: "Last name is required",
         minLength: {
             value: 4,
-            message: "Minimum length should be 4",
+            message: "Minimum length should have 4 characters",
         },
         maxLength: {
             value: 50,
-            message: "Maximum length can be 50",
+            message: "Maximum length can have 50 characters",
         },
     },
     emailId: {
@@ -53,6 +53,21 @@ export const validations = {
             message: "Password is not valid",
         },
     },
+    gender: {
+        validate: (gender) => {
+            if(!["Male", "Female"].includes(gender)) return "Gender can be Male or Female";
+        } 
+    },
+    about: {
+        minLength: {
+            value: 20,
+            message: "Minimum length should be 20 characters",
+        },
+        maxLength: {
+            value: 100,
+            message: "Maximum length can have 100 characters",
+        }
+    }
 };
 
 export const signUpInputs = [
@@ -84,3 +99,26 @@ export const loginInputs = [
         label: "Password",
     },
 ];
+
+export const profileInputs = [
+    {
+        name: "firstName",
+        label: "First Name",
+    },
+    {
+        name: "lastName",
+        label: "Last Name",
+    },
+    {
+        name: "gender",
+        label: "Gender",
+    },
+    {
+        name: "photoUrl",
+        label: "Photo URL",
+    },
+    {
+        name: "about",
+        label: "About",
+    },
+]
