@@ -37,7 +37,10 @@ class ConnectionReqService {
 
     async sendRequest(status, userId) {
         try {
-            const res = await axios.post(this.baseUrl + apiEndpoints.sendRequest + `/${status}/${userId}`,
+            const res = await axios.post(
+                this.baseUrl +
+                    apiEndpoints.sendConnection +
+                    `${status}/${userId}`,
                 {},
                 {
                     withCredentials: true,
@@ -52,7 +55,8 @@ class ConnectionReqService {
 
     async reviewRequest(status, reqId) {
         try {
-            const res = await axios.post(this.baseUrl + apiEndpoints.reviewReq + `/${status}/${reqId}`,
+            const res = await axios.patch(
+                this.baseUrl + apiEndpoints.reviewReq + `${status}/${reqId}`,
                 {},
                 {
                     withCredentials: true,

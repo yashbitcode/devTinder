@@ -29,10 +29,10 @@ const AllConnections = () => {
             <h1 className="text-4xl text-center">Connections</h1>
             <div className="flex flex-col gap-4 mt-7">
                 {
-                    connections ? connections.map((el) => (
+                    connections?.length > 0 ? connections.map((el) => (
                         <ConnectionCard key={el.friend._id} {...el.friend} />
                     )) : (
-                        <div className="bg-white px-3 py-2 text-2xl rounded-md">No Connection Found</div>
+                        <div className="bg-white text-black w-fit mx-auto px-3 py-2 text-2xl rounded-md">No Connections Found</div>
                     )
 
                 }

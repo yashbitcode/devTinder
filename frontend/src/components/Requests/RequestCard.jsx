@@ -29,7 +29,7 @@ const RequestCard = ({
             </div>
             <div className="grow">
                 <h1 className="text-xl">{firstName + " " + lastName}</h1>
-                <p>{about}</p>
+                <p>{about?.substr(0, 30) + "..."}</p>
             </div>
             <div className="flex gap-3">
                 <CustomButton className={"bg-pink-500 rounded-xl"} onClick={() => handleReview("accepted")}>Accept</CustomButton>

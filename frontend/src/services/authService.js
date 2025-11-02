@@ -73,6 +73,18 @@ class AuthService {
             return error;
         }
     }
+
+    async logout() {
+        try {
+            const res = await axios.post(this.baseUrl + apiEndpoints.logout, {}, {
+                withCredentials: true
+            });
+
+            return res;
+        } catch (error) {
+            return error;
+        }
+    }
 }
 
 export default new AuthService();

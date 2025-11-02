@@ -1,10 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
 import { CustomButton } from "../../custom-components";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import Auth from "../../services/authService";
 import { removeUser } from "../../store/store-slices/userSlice";
-import { defaultPic } from "../../utils/constants";
+import { defaultPic, menuOptions } from "../../utils/constants";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 const NavBar = () => {
     const user = useSelector((state) => state.userReducer.user);
@@ -14,19 +15,17 @@ const NavBar = () => {
     const [showMenu, setShowMenu] = useState(false);
 
     const logout = async () => {
-        try {
-            await axios.post("http://localhost:3000/logout", {}, {
-                withCredentials: true
-            });
-
+        const res = await Auth.logout();
+        if (res?.data?.success) {
             dispatch(removeUser());
             navigate("/login", {
                 replace: true
             });
-            
+
             setShowMenu(false);
-        } catch (error) {
-            console.error(error);
+            toast.success(res.data.message);
+        } else {
+            toast.error(res?.response?.data?.error || "Something went wrong")
         }
     };
 
@@ -48,26 +47,13 @@ const NavBar = () => {
                             {
                                 showMenu && (
                                     <ul className="p-4 rounded-md bg-primary-light absolute -right-4.5 -bottom-50 text-[1.1rem] flex flex-col gap-1">
-                                        <Link to={'/profile'}>
-                                            <li>
-                                                Profile
-                                            </li>
-                                        </Link>
-                                        <Link to={'/'}>
-                                            <li>
-                                                Feed
-                                            </li>
-                                        </Link>
-                                        <Link to={'/connections'}>
-                                            <li>
-                                                Connections
-                                            </li>
-                                        </Link>
-                                        <Link to={'/requests'}>
-                                            <li>
-                                                Requests
-                                            </li>
-                                        </Link>
+                                        {
+                                            menuOptions.map((el) => (
+                                                <Link to={el.href} onClick={() => setShowMenu(false)}>
+                                                    <li>{el.label}</li>
+                                                </Link>
+                                            ))
+                                        }
                                         <li>
                                             <CustomButton className={"bg-transparent p-0 text-start"} onClick={logout}>Logout</CustomButton>
                                         </li>

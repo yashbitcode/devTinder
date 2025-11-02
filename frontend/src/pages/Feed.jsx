@@ -33,7 +33,7 @@ const Feed = () => {
             <h1 className="text-4xl text-center mb-5">Feed</h1>
             {
                 !loading && (
-                    <div className="flex gap-4">
+                    <div className="flex gap-4 flex-wrap justify-center">
                         {
                             userFeed?.length > 0 ? userFeed.map((el) => (
                                 <FeedCard key={el._id} removeUser={removeUser} {...el} />

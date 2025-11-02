@@ -27,7 +27,7 @@ function App() {
             </main>
             <Footer />
             <ToastContainer
-                position="top-right"
+                position="top-left"
                 autoClose={5000}
                 pauseOnHover
                 theme="light"

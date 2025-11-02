@@ -21,7 +21,7 @@ const CustomInput = ({
     return (
         <div className={contClasses} {...contProps}>
             {
-                label && <label htmlFor={id || defaultId}>{label}</label>
+                label && <label className="text-[1.05rem]" htmlFor={id || defaultId}>{label}</label>
             }
             <input ref={ref} type={type} id={id || defaultId} name={name} value={value} className={twMerge("py-2 px-3 w-full border-2 border-gray-500 rounded-md flex flex-col gap-3", className)} {...props} />
             {

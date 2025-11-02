@@ -38,7 +38,7 @@ const ForgotPassword = () => {
                 <CustomInput {...register("confirmPassword", {
                     required: "Confirm password is required",
                     validate: (confirmPassword) => {
-                        if (confirmPassword !== getValues("password")) return "confirm password is not same";
+                        if (confirmPassword !== getValues("newPassword")) return "confirm password is not same";
                     }
                 })} error={errors?.confirmPassword?.message} label={"Confirm Password"} />
                 <Link to={"/login"} className={"hover:underline w-fit"}>Back To Login?</Link>

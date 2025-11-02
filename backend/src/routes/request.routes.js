@@ -44,7 +44,7 @@ router.post("/send/:status/:toUserId", ensureAuthenticated, async (req, res) => 
         });
 
         res.json({
-            sucess: true,
+            success: true,
             message: status[0].toUpperCase() + status.substring(1) + " request sent",
             data: {
                 _id: requestDoc._id,
@@ -86,7 +86,7 @@ router.patch("/review/:status/:reqId", ensureAuthenticated, async (req, res) => 
         if(!doc) throw Error("Connection request not found");
 
         res.json({
-            sucess: true,
+            success: true,
             message: status[0].toUpperCase() + status.substring(1) + " request sent",
             data: doc
         });

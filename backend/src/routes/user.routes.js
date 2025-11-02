@@ -126,7 +126,7 @@ router.get("/feed", ensureAuthenticated, async (req, res) => {
     try {
         const loggedInUser = req.user;
         const page = parseInt(req.query.page) || 1;
-        let limit = parseInt(req.query.limit);
+        let limit = parseInt(req.query.limit) || 10;
 
         limit = limit <= 10 ? limit : 10;
 

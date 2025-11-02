@@ -14,6 +14,7 @@ export const apiEndpoints = {
     signUp: "/signup",
     login: "/login",
     forgotPassword: "/password",
+    logout: "/logout"
 };
 
 export const validations = {
@@ -121,4 +122,23 @@ export const profileInputs = [
         name: "about",
         label: "About",
     },
-]
+];
+
+export const menuOptions = [
+    {
+        label: "Profile",
+        href: "/profile"
+    },
+    {
+        label: "Feed",
+        href: "/"
+    },
+    {
+        label: "Connections",
+        href: "/connections"
+    },
+    {
+        label: "Requests",
+        href: "/requests"
+    },
+];

@@ -16,7 +16,7 @@ const ConnectionCard = ({
             <div>
                 <h1 className="text-xl">{firstName + " " + lastName}</h1>
                 <p>{age}, {gender}</p>
-                <p>{about.substr(0, 30) + "..."}</p>
+                <p>{about?.substr(0, 30) + "..."}</p>
             </div>
         </div>
     );

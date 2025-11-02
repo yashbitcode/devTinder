@@ -14,6 +14,8 @@ const FeedCard = ({
     const handleReq = async (status) => {
         const res = await ConnReq.sendRequest(status, userId);
 
+        console.log(res)
+
         if(res?.data?.success) {
             toast.success(res.data.message);
             removeUser(userId);
@@ -29,10 +31,10 @@ const FeedCard = ({
             </div>
 
             <div className="p-4">
-                <h1>{firstName + " " + lastName}</h1>
-                <p>{about}</p>
+                <h1 className="text-xl font-semibold">{firstName + " " + lastName}</h1>
+                <p className="mt-2">{about?.substr(0, 30) + "..."}</p>
 
-                <div className="mt-2 flex gap-3">
+                <div className="mt-4 flex gap-3">
                     <CustomButton className={"bg-pink-500 rounded-xl"} onClick={() => handleReq("interested")}>Interested</CustomButton>
                     <CustomButton className={"bg-purple-700 rounded-xl"} onClick={() => handleReq("ignored")}>Ignore</CustomButton>
                 </div>
