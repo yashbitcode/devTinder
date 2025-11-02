@@ -2,13 +2,11 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
-import { BrowserRouter, createBrowserRouter, Route, RouterProvider, Routes } from "react-router-dom"
+import { BrowserRouter, Route, Routes } from "react-router-dom"
 import { Provider } from 'react-redux';
 import { store } from "./store/appStore.js";
 import Protected from './components/Protected/Protected.jsx';
-import { Feed, Login, SignUp, Profile, AllConnections } from "./pages/index.js";
-import AllRequests from './pages/AllRequests.jsx'
-import ForgotPassword from './pages/ForgotPassword.jsx'
+import { Feed, Login, SignUp, Profile, AllConnections, AllRequests, ForgotPassword } from "./pages/index.js";
 
 // const router = createBrowserRouter([
 //     {
@@ -78,8 +76,6 @@ import ForgotPassword from './pages/ForgotPassword.jsx'
 createRoot(document.getElementById('root')).render(
     <StrictMode>
         <Provider store={store}>
-            {/* <RouterProvider router={router} /> */}
-
             <BrowserRouter>
                 <Routes>
                     <Route element={<App />}>
