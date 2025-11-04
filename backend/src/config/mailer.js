@@ -1,35 +1,6 @@
 require("dotenv/config");
 const nodemailer = require("nodemailer");
 const { getHtmlMessage } = require("../utils/helpers");
-// const { MailerSend, EmailParams, Sender, Recipient } = require("mailersend");
-// const { getHtmlMessage } = require("../utils/helpers");
-
-// const mailerSend = new MailerSend({
-//     apiKey: process.env.MAILERSEND_API,
-// });
-
-// const sentFrom = new Sender(process.env.MY_EMAIL, "YashBitCode DevTinder");
-
-// async function sendMail(emailId, receiver, sender, status) {
-//     try {
-//         const recipient = [new Recipient(emailId, receiver)];
-
-//         const emailParams = new EmailParams()
-//             .setFrom(sentFrom)
-//             .setTo(recipient)
-//             .setReplyTo(sentFrom)
-//             .setSubject("This is a Subject")
-//             .setHtml(getHtmlMessage(status, sender, receiver));
-
-//         await mailerSend.email.send(emailParams);
-//     } catch (error) {
-//         console.log(error);
-//     }
-// }
-
-// module.exports = {
-//     sendMail,
-// };
 
 const sendMail = async (emailId, receiver, sender, status) => {
     try {
@@ -51,9 +22,9 @@ const sendMail = async (emailId, receiver, sender, status) => {
             subject:
                 status === "interested"
                     ? "You received new request"
-                    : "Your request accepted",
+                    : status === "review" ? "Review yesterday's requests" : "Your request accepted",
             html: getHtmlMessage(status, sender, receiver),
-            attachments: [{ filename: 'test.txt', content: 'Hello file' }]
+            // attachments: [{ filename: 'test.txt', content: 'Hello file' }]
         };
 
         const info = await transporter.sendMail(message);

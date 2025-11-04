@@ -7,8 +7,7 @@ const profileRouter = require("./routes/profile.routes");
 const userRouter = require("./routes/user.routes");
 const requestRouter = require("./routes/request.routes");
 const { authMiddleware } = require("./middlewares/auth.middleware");
-const { getHtmlMessage } = require("./utils/helpers");
-const { sendMail } = require("./config/mailer");
+require("./config/cron");
 
 const app = express();
 const PORT = 3000;
