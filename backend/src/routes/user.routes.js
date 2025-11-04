@@ -11,7 +11,13 @@ router.get("/requests", ensureAuthenticated, async (req, res) => {
         const data = await ConnectionReq.find({
             toUserId: userId,
             status: "interested",
-        }).populate("fromUserId", ["_id", "firstName", "lastName", "about", "photoUrl"]);
+        }).populate("fromUserId", [
+            "_id",
+            "firstName",
+            "lastName",
+            "about",
+            "photoUrl",
+        ]);
 
         // aggregation pipeline to get the from user info
         // const data = await ConnectionReq.aggregate([
@@ -92,7 +98,7 @@ router.get("/connections", ensureAuthenticated, async (req, res) => {
                                 photoUrl: 1,
                                 age: 1,
                                 gender: 1,
-                                about: 1
+                                about: 1,
                             },
                         },
                     ],
@@ -112,7 +118,7 @@ router.get("/connections", ensureAuthenticated, async (req, res) => {
 
         res.json({
             success: true,
-            data
+            data,
         });
     } catch (error) {
         res.status(400).json({
@@ -143,11 +149,11 @@ router.get("/feed", ensureAuthenticated, async (req, res) => {
 
         const excludedUsers = new Set();
 
-        if(allConnections.length) allConnections.forEach((el) => {
-            excludedUsers.add(el.fromUserId.toString());
-            excludedUsers.add(el.toUserId.toString());
-        });
-
+        if (allConnections.length)
+            allConnections.forEach((el) => {
+                excludedUsers.add(el.fromUserId.toString());
+                excludedUsers.add(el.toUserId.toString());
+            });
         else excludedUsers.add(loggedInUser._id);
 
         const feedUsers = await User.find(
@@ -160,9 +166,9 @@ router.get("/feed", ensureAuthenticated, async (req, res) => {
                     },
                     {
                         _id: {
-                            $ne: loggedInUser._id
-                        }
-                    }
+                            $ne: loggedInUser._id,
+                        },
+                    },
                 ],
             },
             "firstName lastName photoUrl about skills"
@@ -241,7 +247,7 @@ router.get("/feed", ensureAuthenticated, async (req, res) => {
 
         res.json({
             success: true,
-            feedUsers
+            feedUsers,
         });
     } catch (error) {
         res.status(400).json({

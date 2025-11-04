@@ -1,0 +1,3 @@
+- setting customerId and isPremium field in user model
+- creating new model for orders
+    - fields -> userId, customerId, membershipType, currency, status, amount

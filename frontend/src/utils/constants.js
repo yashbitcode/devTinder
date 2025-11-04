@@ -142,3 +142,26 @@ export const menuOptions = [
         href: "/requests"
     },
 ];
+
+export const packages = [
+    {
+        packageName: "silver",
+        price: 399,
+        features: [
+            "Unlimited chats",
+            "100 requests per day",
+            "Silver tick",
+            "3 months"
+        ]
+    },
+    {
+        packageName: "gold",
+        price: 599,
+        features: [
+            "Unlimited chats",
+            "Unlimited requests per day",
+            "Gold tick",
+            "6 months"
+        ]
+    },
+];

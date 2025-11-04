@@ -68,6 +68,14 @@ const userSchema = new mongoose.Schema(
                 message: () => "Skills cannot be more than 3",
             },
         },
+        customerId: {
+            type: String,
+            default: null
+        },
+        isPremium: {
+            type: Boolean,
+            default: false
+        }
     },
     {
         timestamps: true,

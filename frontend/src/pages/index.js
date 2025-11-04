@@ -5,5 +5,6 @@ import Profile from "./Profile";
 import AllConnections from "./AllConnections";
 import AllRequests from "./AllRequests";
 import ForgotPassword from "./ForgotPassword";
+import Premium from "./Premium";
 
-export { Feed, Login, SignUp, Profile, AllConnections, AllRequests, ForgotPassword };
+export { Feed, Login, SignUp, Profile, AllConnections, AllRequests, ForgotPassword, Premium };
