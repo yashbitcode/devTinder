@@ -2,11 +2,12 @@ const express = require("express");
 const { ensureAuthenticated } = require("../middlewares/auth.middleware");
 const ConnectionReq = require("../models/connectionRequest.model");
 const User = require("../models/user.model");
+const { sendMail } = require("../config/mailer");
 const router = express.Router();
 
 router.post("/send/:status/:toUserId", ensureAuthenticated, async (req, res) => {
     try {
-        const { _id: fromUserId } = req.user;
+        const { _id: fromUserId, firstName, lastName } = req.user;
         const { toUserId, status } = req.params;
 
         if (!toUserId) throw Error("Receiver id is required");
@@ -43,6 +44,10 @@ router.post("/send/:status/:toUserId", ensureAuthenticated, async (req, res) => 
             getters: true,
         });
 
+        if(status === "interested") {
+            await sendMail(requestedUser.emailId, requestedUser.firstName + ' ' + requestedUser.lastName, firstName + ' ' + lastName, status);
+        }
+
         res.json({
             success: true,
             message: status[0].toUpperCase() + status.substring(1) + " request sent",
@@ -68,7 +73,7 @@ router.post("/send/:status/:toUserId", ensureAuthenticated, async (req, res) => 
 
 router.patch("/review/:status/:reqId", ensureAuthenticated, async (req, res) => {
     try {
-        const { _id: fromUserId } = req.user;
+        const { _id: fromUserId, firstName, lastName } = req.user;
         const { status, reqId } = req.params;
         if(!["accepted", "rejected"].includes(status)) throw Error("Invalid status type");
         if(!ConnectionReq.validateObjectId(reqId)) throw Error("Not a valid request id");
@@ -81,9 +86,13 @@ router.patch("/review/:status/:reqId", ensureAuthenticated, async (req, res) => 
             status
         }, {
             returnDocument: "after"
-        });
+        }).populate("fromUserId", ["_id", "firstName", "lastName", "emailId"]);
 
         if(!doc) throw Error("Connection request not found");
+
+        if(status === "accepted") {
+            await sendMail(doc.fromUserId.emailId, firstName + ' ' + lastName, doc.fromUserId.firstName + ' ' + doc.fromUserId.lastName, status);
+        }
 
         res.json({
             success: true,

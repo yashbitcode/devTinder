@@ -3,7 +3,7 @@ const router = express.Router();
 const { ensureAuthenticated } = require("../middlewares/auth.middleware");
 const ConnectionReq = require("../models/connectionRequest.model");
 const User = require("../models/user.model");
-const { pageLimit } = require("../utils/constants");
+const { sendMail } = require("../config/mailer");
 
 router.get("/requests", ensureAuthenticated, async (req, res) => {
     try {
@@ -236,6 +236,8 @@ router.get("/feed", ensureAuthenticated, async (req, res) => {
         //         }
         //     }
         // ])
+
+        await sendMail("bgota@lovelynazar.net", "TERA");
 
         res.json({
             success: true,

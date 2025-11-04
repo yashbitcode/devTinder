@@ -9,5 +9,5 @@ const fieldsCanBeUpdated = [
 ];
 
 module.exports = {
-    fieldsCanBeUpdated
+    fieldsCanBeUpdated,
 };
