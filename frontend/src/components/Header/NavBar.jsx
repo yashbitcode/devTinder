@@ -46,7 +46,7 @@ const NavBar = () => {
 
                             {
                                 showMenu && (
-                                    <ul className="p-4 rounded-md bg-primary-light absolute -right-4.5 -bottom-50 text-[1.1rem] flex flex-col gap-1">
+                                    <ul className="p-4 rounded-md bg-primary-light absolute -right-4.5 -bottom-60 text-[1.1rem] flex flex-col gap-1">
                                         {
                                             menuOptions.map((el) => (
                                                 <Link to={el.href} onClick={() => setShowMenu(false)}>
