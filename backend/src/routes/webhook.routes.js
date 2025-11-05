@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Order = require("../models/order.model");
+const User = require("../models/user.model");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 router.post(
@@ -33,30 +34,40 @@ router.post(
                     paymentStatus: obj.payment_status,
                     stripeSubscriptionId: obj.subscription,
                 });
+
+                await User.findByIdAndUpdate(obj.metadata.userId, {
+                    isPremium: true,
+                    membershipType: obj.metadata.membershipType
+                });
+
                 break;
             }
             case "payment_intent.payment_failed": {
                 await Order.findByIdAndUpdate(obj.metadata.orderId, {
                     paymentStatus: "failed",
                 });
+
                 break;
             }
             case "charge.refund.updated": {
                 await Order.findByIdAndUpdate(obj.metadata.orderId, {
                     paymentStatus: "refunded",
                 });
+
                 break;
             }
             case "checkout.session.canceled": {
                 await Order.findByIdAndUpdate(obj.metadata.orderId, {
                     paymentStatus: "canceled",
                 });
+
                 break;
             }
             case "checkout.session.expired": {
                 await Order.findByIdAndUpdate(obj.metadata.orderId, {
                     paymentStatus: "expired",
                 });
+
                 break;
             }
         }

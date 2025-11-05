@@ -6,5 +6,7 @@ import AllConnections from "./AllConnections";
 import AllRequests from "./AllRequests";
 import ForgotPassword from "./ForgotPassword";
 import Premium from "./Premium";
+import Success from "./Success";
+import Failure from "./Failure";
 
-export { Feed, Login, SignUp, Profile, AllConnections, AllRequests, ForgotPassword, Premium };
+export { Feed, Login, SignUp, Profile, AllConnections, AllRequests, ForgotPassword, Premium, Success, Failure };

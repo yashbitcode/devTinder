@@ -14,7 +14,8 @@ export const apiEndpoints = {
     signUp: "/signup",
     login: "/login",
     forgotPassword: "/password",
-    logout: "/logout"
+    logout: "/logout",
+    payment: "/payment/create-checkout-session"
 };
 
 export const validations = {
@@ -140,6 +141,10 @@ export const menuOptions = [
     {
         label: "Requests",
         href: "/requests"
+    },
+    {
+        label: "Premium",
+        href: "/premium"
     },
 ];
 

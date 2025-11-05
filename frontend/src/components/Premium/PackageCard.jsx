@@ -1,10 +1,23 @@
+import { toast } from "react-toastify";
 import { CustomButton } from "../../custom-components";
+import Pay from "../../services/payService";
 
 const PackageCard = ({
     packageName,
     price,
     features
 }) => {
+    const handlePay = async () => {
+        const res = await Pay.makePayment(packageName);
+        console.log(res);
+
+        if (res?.data?.success) {
+            window.location.href = res.data.url;
+        } else {
+            toast.error(res?.response?.data?.error || "Something went wrong")
+        }
+    };
+
     return (
         <div className="p-4 flex flex-col gap-4 bg-primary-light w-full max-w-xs rounded-md">
             <h1 className="uppercase text-2xl">{packageName}</h1>
@@ -19,7 +32,7 @@ const PackageCard = ({
                     ))
                 }
             </div>
-            <CustomButton className={"text-xl rounded-md bg-black/40"}>Pay Now</CustomButton>
+            <CustomButton className={"text-xl rounded-md bg-black/40"} onClick={handlePay}>Pay Now</CustomButton>
         </div>
     );
 };
