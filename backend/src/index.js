@@ -6,6 +6,8 @@ const authRouter = require("./routes/auth.routes");
 const profileRouter = require("./routes/profile.routes");
 const userRouter = require("./routes/user.routes");
 const requestRouter = require("./routes/request.routes");
+const paymentRouter = require("./routes/payment.routes");
+const webhookRouter = require("./routes/webhook.routes");
 const { authMiddleware } = require("./middlewares/auth.middleware");
 require("./config/cron");
 
@@ -15,6 +17,8 @@ const corsOptions = {
     origin: "http://localhost:5173",
     credentials: true,
 };
+
+app.use("/webhook", webhookRouter)
 
 app.use(express.json());
 app.use(cookieParser());
@@ -31,6 +35,7 @@ app.use("/", authRouter);
 app.use("/user", userRouter);
 app.use("/profile", profileRouter);
 app.use("/request", requestRouter);
+app.use("/payment", paymentRouter);
 
 connect()
     .then(() => {
@@ -40,5 +45,3 @@ connect()
         );
     })
     .catch(() => console.log("Connection Not Estab."));
-
-

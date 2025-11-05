@@ -1,3 +1,6 @@
 - setting customerId and isPremium field in user model
 - creating new model for orders
     - fields -> userId, customerId, membershipType, currency, status, amount
+- once the user click "buy now"
+    - if user have cust.id use it, else create user(stripe) and update cust.id
+- creating order in db, setting paymentIntent and its meta(order_id) 
