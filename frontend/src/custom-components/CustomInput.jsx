@@ -3,9 +3,7 @@ import { twMerge } from "tailwind-merge";
 
 const CustomInput = ({
     className,
-    containerProps = {
-        className: "w-full flex flex-col gap-1.5",
-    },
+    containerProps = {},
     type = "text",
     value,
     name,
@@ -19,7 +17,7 @@ const CustomInput = ({
     const { className: contClasses, ...contProps } = containerProps;
 
     return (
-        <div className={contClasses} {...contProps}>
+        <div className={twMerge("w-full flex flex-col gap-1.5", contClasses)} {...contProps}>
             {
                 label && <label className="text-[1.05rem]" htmlFor={id || defaultId}>{label}</label>
             }

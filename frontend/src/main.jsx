@@ -6,7 +6,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom"
 import { Provider } from 'react-redux';
 import { store } from "./store/appStore.js";
 import Protected from './components/Protected/Protected.jsx';
-import { Feed, Login, SignUp, Profile, AllConnections, AllRequests, ForgotPassword, Premium, Success, Failure } from "./pages/index.js";
+import { Feed, Login, SignUp, Profile, AllConnections, AllRequests, ForgotPassword, Premium, Success, Failure, Chat } from "./pages/index.js";
 
 // const router = createBrowserRouter([
 //     {
@@ -87,6 +87,7 @@ createRoot(document.getElementById('root')).render(
                             <Route path="premium" element={<Premium />} />
                             <Route path="success" element={<Success />} />
                             <Route path="failure" element={<Failure />} />
+                            <Route path="chat/:targetUserId" element={<Chat />} />
                         </Route>
 
                         <Route element={<Protected reqAuth={false} />}>

@@ -7,7 +7,7 @@ const CustomButton = ({
     ...props
 }) => {
     return (
-        <button type={type} className={twMerge("w-full bg-neutral-900 cursor-pointer p-3 rounded-xs", className)} {...props}>
+        <button type={type} className={twMerge("w-full bg-neutral-900 cursor-pointer p-3 rounded-md", className)} {...props}>
             {children}
         </button>
     );

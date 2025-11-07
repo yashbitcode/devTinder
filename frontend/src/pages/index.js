@@ -8,5 +8,6 @@ import ForgotPassword from "./ForgotPassword";
 import Premium from "./Premium";
 import Success from "./Success";
 import Failure from "./Failure";
+import Chat from "./Chat";
 
-export { Feed, Login, SignUp, Profile, AllConnections, AllRequests, ForgotPassword, Premium, Success, Failure };
+export { Feed, Login, SignUp, Profile, AllConnections, AllRequests, ForgotPassword, Premium, Success, Failure, Chat };
