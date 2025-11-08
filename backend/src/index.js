@@ -12,7 +12,7 @@ const paymentRouter = require("./routes/payment.routes");
 const webhookRouter = require("./routes/webhook.routes");
 const { authMiddleware } = require("./middlewares/auth.middleware");
 const initialiseSocket = require("./config/socket");
-require("./config/cron");
+// require("./config/cron");
 
 const app = express();
 const corsOptions = {
@@ -38,6 +38,7 @@ app.use("/user", userRouter);
 app.use("/profile", profileRouter);
 app.use("/request", requestRouter);
 app.use("/payment", paymentRouter);
+
 
 const httpServer = createServer(app);
 initialiseSocket(httpServer);

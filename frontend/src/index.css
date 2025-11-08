@@ -5,3 +5,12 @@
     --color-secondary: #191e24;
     --color-primary-light: #1d232a;
 }
+@layer utilities {
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+}
