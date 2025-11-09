@@ -23,8 +23,8 @@ const authMiddleware = async (req, res, next) => {
 
 const ensureAuthenticated = (req, res, next) => {
     try {
-        
         if(!req.user) throw Error("You must be authenticated");
+        
         next();        
     } catch (error) {
         res.status(400).json({

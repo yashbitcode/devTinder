@@ -10,6 +10,7 @@ const userRouter = require("./routes/user.routes");
 const requestRouter = require("./routes/request.routes");
 const paymentRouter = require("./routes/payment.routes");
 const webhookRouter = require("./routes/webhook.routes");
+const chatRouter = require("./routes/chat.routes");
 const { authMiddleware } = require("./middlewares/auth.middleware");
 const initialiseSocket = require("./config/socket");
 // require("./config/cron");
@@ -38,6 +39,7 @@ app.use("/user", userRouter);
 app.use("/profile", profileRouter);
 app.use("/request", requestRouter);
 app.use("/payment", paymentRouter);
+app.use("/chat", chatRouter);
 
 
 const httpServer = createServer(app);

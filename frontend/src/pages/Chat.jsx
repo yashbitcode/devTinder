@@ -1,9 +1,23 @@
 import { useParams } from "react-router-dom";
 import { CustomButton, CustomInput } from "../custom-components";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import setupSocketConnection from "../utils/setupSocketConnection";
 import { useSelector } from "react-redux";
+import ChatService from "../services/chatService";
 import { twMerge } from "tailwind-merge";
+import { toast } from "react-toastify";
+
+/* 
+    - getting intial chats
+    - then afterwards if user sending
+        - make the state update not db pull
+        - {
+            senderId,
+            message,
+            _id,
+            creation date,
+        } 
+*/
 
 const Chat = () => {
     const { targetUserId } = useParams();
@@ -12,16 +26,27 @@ const Chat = () => {
     const socketRef = useRef(null);
     const [messages, setMessages] = useState([]);
 
+    const fetchChats = useCallback(async () => {
+        const res = await ChatService.getUserChats(targetUserId);
+        
+        if(res?.data?.success) {
+            setMessages(res.data.chat.messages);
+        } else {
+            toast.error(res?.response?.data?.error || "Something went wrong");
+        }
+    }, [targetUserId]);
+
     useEffect(() => {
         // verify the connection
+        fetchChats();
 
         // setting io conn
         const socket = setupSocketConnection();
         socketRef.current = socket;
 
         socket.on("receivedMessage", (msgObj) => {
-            msgObj.id = Date.now();
-            msgObj.receiver = true;
+            msgObj._id = crypto.randomUUID();
+            msgObj.createdAt = Date.now().toString();
 
             setMessages((prev) => [
                 ...prev,
@@ -32,17 +57,27 @@ const Chat = () => {
         socket.emit("joinChat", [targetUserId, user._id]);
 
         return () => socket.disconnect();
-    }, [user, targetUserId]);
+    }, [user, targetUserId, fetchChats]);
+
+    console.log(messages);
 
     const sendMessage = () => {
         const msgObj = {
-            name: user.firstName,
+            sender: {
+                senderId: user._id,
+                name: user.firstName
+            },
             message: msgRef.current.value,
-            id: Date.now(),
-            receiver: false
+            _id: crypto.randomUUID(),
+            createdAt: Date.now().toString(),
         };
 
-        socketRef.current.emit("sendMessage", msgObj);
+        socketRef.current.emit("sendMessage", {
+            sender: msgObj.sender,
+            message: msgObj.message,
+            ids: [targetUserId, user._id],
+        });
+
         msgRef.current.value = "";
 
         setMessages((prev) => [
@@ -59,10 +94,10 @@ const Chat = () => {
 
             <div className="w-full border-l-2 flex flex-col gap-2 border-r-2 p-4 h-96 border-gray-600 overflow-y-scroll no-scrollbar">
                 {
-                    messages.map((msg) => (
-                        <div className={twMerge("max-w-xs w-full", !msg.receiver && "self-end text-end")} key={msg.id}>
-                            <h1>{msg.name}</h1>
-                            <p className={twMerge("w-fit py-2 px-3 text-sm mt-1 rounded-md bg-primary-light", !msg.receiver && "ml-auto")}>{msg.message}</p>
+                    messages?.map((msg) => (
+                        <div className={twMerge("max-w-xs w-full", (user._id === msg.sender.senderId) && "self-end text-end")} key={msg._id}>
+                            <h1>{msg.sender.name}</h1>
+                            <p className={twMerge("w-fit py-2 px-3 text-sm mt-1 rounded-md bg-neutral-700", (user._id === msg.sender.senderId) && "ml-auto")}>{msg.message}</p>
                         </div>
                     ))
                 }

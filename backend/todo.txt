@@ -4,3 +4,13 @@
 - once the user click "buy now"
     - if user have cust.id use it, else create user(stripe) and update cust.id
 - creating order in db, setting paymentIntent and its meta(order_id) 
+
+- chat schema:
+    - connectionId, or (sender & receiver ids)
+    - chats as an array
+        - {
+            senderId,
+            receiverId,
+            msgTxt,
+            creationDate
+        } 

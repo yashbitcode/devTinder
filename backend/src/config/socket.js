@@ -1,6 +1,7 @@
 const { Server } = require("socket.io");
 const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
+const Chat = require("../models/chat.model");
 
 const initialiseSocket = (httpServer) => {
     const io = new Server(httpServer, {
@@ -29,13 +30,32 @@ const initialiseSocket = (httpServer) => {
             const roomId = ids.sort().join("_");
 
             socket.roomId = roomId;
-            console.log(socket.roomId);
             socket.join(roomId);
         });
 
-        socket.on("sendMessage", ({ name, message }) => {
-            console.log({ name, message }, socket.roomId);
-            socket.to(socket.roomId).emit("receivedMessage", { name, message });
+        socket.on("sendMessage", async ({ sender, message, ids }) => {
+            try {
+                let chat = await Chat.findOne({
+                    participants: {
+                        $all: ids,
+                    },
+                });
+
+                if (!chat) return;
+
+                chat.messages.push({
+                    sender,
+                    message
+                });
+
+                await chat.save();
+
+                socket
+                    .to(socket.roomId)
+                    .emit("receivedMessage", { sender, message });
+            } catch {
+                return;
+            }
         });
     });
 };
