@@ -25,42 +25,71 @@ const Chat = () => {
     const msgRef = useRef(null);
     const socketRef = useRef(null);
     const [messages, setMessages] = useState([]);
+    const [loading, setLoading] = useState({
+        load: true,
+        resolved: false
+    });
 
     const fetchChats = useCallback(async () => {
         const res = await ChatService.getUserChats(targetUserId);
-        
-        if(res?.data?.success) {
+
+        if (res?.data?.success) {
             setMessages(res.data.chat.messages);
+            setLoading({
+                load: false,
+                resolved: true
+            });
         } else {
             toast.error(res?.response?.data?.error || "Something went wrong");
+            setLoading({
+                load: false,
+                resolved: false
+            });
+        }
+    }, [targetUserId]);
+
+    const verifyConn = useCallback(async () => {
+        const res = await ChatService.verifyUserConnection(targetUserId);
+
+        if (res?.data?.success) return true;
+        else {
+            toast.error(res?.response?.data?.error || "Something went wrong");
+            return false;
         }
     }, [targetUserId]);
 
     useEffect(() => {
-        
+        verifyConn().then((res) => {
+            if (!res) {
+                setLoading({
+                    load: false,
+                    resolved: false
+                });
 
-        fetchChats();
+                return;
+            }
 
-        // setting io conn
-        const socket = setupSocketConnection();
-        socketRef.current = socket;
+            fetchChats();
 
-        socket.on("receivedMessage", (msgObj) => {
-            msgObj._id = crypto.randomUUID();
-            msgObj.createdAt = Date.now().toString();
+            const socket = setupSocketConnection();
+            socketRef.current = socket;
 
-            setMessages((prev) => [
-                ...prev,
-                msgObj,
-            ]);
-        });
+            socket.on("receivedMessage", (msgObj) => {
+                msgObj._id = crypto.randomUUID();
+                msgObj.createdAt = Date.now().toString();
 
-        socket.emit("joinChat", [targetUserId, user._id]);
+                setMessages((prev) => [
+                    ...prev,
+                    msgObj,
+                ]);
+            });
 
-        return () => socket.disconnect();
-    }, [user, targetUserId, fetchChats]);
+            socket.emit("joinChat", [targetUserId, user._id]);
+        })
 
-    console.log(messages);
+        return () => socketRef?.current?.disconnect();
+    }, [user, targetUserId, fetchChats, verifyConn]);
+
 
     const sendMessage = () => {
         const msgObj = {
@@ -87,7 +116,9 @@ const Chat = () => {
         ]);
     };
 
-    return (
+    if (!loading.load && !loading.resolved) return <div className="bg-white text-black w-fit mx-auto px-3 py-2 text-2xl rounded-md">Connection Doesn't Exist</div>
+
+    return !loading.load && (
         <div className="max-w-3xl mx-auto w-full">
             <div className="text-2xl w-full p-4 border-2 border-gray-600">
                 Chat
@@ -97,7 +128,7 @@ const Chat = () => {
                 {
                     messages?.map((msg) => (
                         <div className={twMerge("max-w-xs w-full", (user._id === msg.sender.senderId) && "self-end text-end")} key={msg._id}>
-                            <h1>{msg.sender.name}</h1>
+                            <h1 className="text-sm">{msg.sender.name}</h1>
                             <p className={twMerge("w-fit py-2 px-3 text-sm mt-1 rounded-md bg-neutral-700", (user._id === msg.sender.senderId) && "ml-auto")}>{msg.message}</p>
                         </div>
                     ))

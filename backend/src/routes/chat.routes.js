@@ -71,6 +71,7 @@ router.get("/verify/:targetUserId", ensureAuthenticated, async (req, res) => {
     } catch {
         res.status(400).json({
             success: false,
+            error: "Connection doesn't exist"
         });
     }
 });

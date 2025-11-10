@@ -16,7 +16,8 @@ export const apiEndpoints = {
     forgotPassword: "/password",
     logout: "/logout",
     payment: "/payment/create-checkout-session",
-    chats: "/chat"
+    chats: "/chat",
+    verifyChatConn: "/chat/verify"
 };
 
 export const validations = {

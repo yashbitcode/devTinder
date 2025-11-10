@@ -26,7 +26,7 @@ class ChatService {
     async verifyUserConnection(targetUserId) {
         try {
             const res = await axios.get(
-                this.baseUrl + apiEndpoints.chats + `/${targetUserId}`,
+                this.baseUrl + apiEndpoints.verifyChatConn + `/${targetUserId}`,
                 {
                     withCredentials: true,
                 }
