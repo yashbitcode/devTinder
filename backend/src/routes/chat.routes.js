@@ -2,6 +2,7 @@ const express = require("express");
 const { ensureAuthenticated } = require("../middlewares/auth.middleware");
 const Chat = require("../models/chat.model");
 const router = express.Router();
+const ConnectionReq = require("../models/connectionRequest.model");
 
 router.get("/:targetUserId", ensureAuthenticated, async (req, res) => {
     try {
@@ -34,6 +35,42 @@ router.get("/:targetUserId", ensureAuthenticated, async (req, res) => {
         res.status(400).json({
             success: false,
             error: error.message,
+        });
+    }
+});
+
+/* 
+    fromUserId -isEqual-> userId, targetId,
+    toUserId -isEqual-> userId, targetId,
+*/
+router.get("/verify/:targetUserId", ensureAuthenticated, async (req, res) => {
+    try {
+        const { _id: userId } = req.user;
+        const { targetUserId } = req.params;
+
+        if (targetUserId === userId.toString()) throw Error();
+
+        const conn = await ConnectionReq.findOne({
+            $or: [
+                {
+                    fromUserId: userId,
+                    toUserId: targetUserId
+                },
+                {
+                    fromUserId: targetUserId,
+                    toUserId: userId,
+                },
+            ]
+        });
+
+        if(!conn) throw Error();
+
+        res.json({
+            success: true
+        });
+    } catch {
+        res.status(400).json({
+            success: false,
         });
     }
 });

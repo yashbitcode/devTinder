@@ -11,21 +11,7 @@ const initialiseSocket = (httpServer) => {
         },
     });
 
-    io.use(async (socket, next) => {
-        try {
-            const token = socket.handshake.headers?.cookie?.split("=")?.[1];
-            if (!token) throw Error("Missing Token");
-
-            const verification = jwt.verify(token, process.env.JWT_SECRET);
-            const user = await User.findById(verification.userId);
-
-            if (!user) throw Error("Invalid token");
-
-            next();
-        } catch (error) {
-            next(new Error(error.message));
-        }
-    }).on("connection", (socket) => {
+    io.use(verifyToken).on("connection", (socket) => {
         socket.on("joinChat", (ids) => {
             const roomId = ids.sort().join("_");
 
@@ -45,7 +31,7 @@ const initialiseSocket = (httpServer) => {
 
                 chat.messages.push({
                     sender,
-                    message
+                    message,
                 });
 
                 await chat.save();
@@ -59,5 +45,29 @@ const initialiseSocket = (httpServer) => {
         });
     });
 };
+
+const verifyToken = async (socket, next) => {
+    try {
+        const token = socket.handshake.headers?.cookie?.split("=")?.[1];
+        if (!token) throw Error("Missing Token");
+
+        const verification = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await User.findById(verification.userId);
+
+        if (!user) throw Error("Invalid token");
+
+        next();
+    } catch (error) {
+        next(new Error(error.message));
+    }
+};
+
+// const verifyConnection = async (socket, next) => {
+//     try {
+//         const 
+//     } catch (error) {
+//         next(new Error(error.message));
+//     }
+// }
 
 module.exports = initialiseSocket;

@@ -37,7 +37,8 @@ const Chat = () => {
     }, [targetUserId]);
 
     useEffect(() => {
-        // verify the connection
+        
+
         fetchChats();
 
         // setting io conn
