@@ -44,9 +44,9 @@ router.post("/send/:status/:toUserId", ensureAuthenticated, async (req, res) => 
             getters: true,
         });
 
-        if(status === "interested") {
-            await sendMail(requestedUser.emailId, requestedUser.firstName + ' ' + requestedUser.lastName, firstName + ' ' + lastName, status);
-        }
+        // if(status === "interested") {
+        //     await sendMail(requestedUser.emailId, requestedUser.firstName + ' ' + requestedUser.lastName, firstName + ' ' + lastName, status);
+        // }
 
         res.json({
             success: true,
@@ -90,9 +90,9 @@ router.patch("/review/:status/:reqId", ensureAuthenticated, async (req, res) => 
 
         if(!doc) throw Error("Connection request not found");
 
-        if(status === "accepted") {
-            await sendMail(doc.fromUserId.emailId, firstName + ' ' + lastName, doc.fromUserId.firstName + ' ' + doc.fromUserId.lastName, status);
-        }
+        // if(status === "accepted") {
+        //     await sendMail(doc.fromUserId.emailId, firstName + ' ' + lastName, doc.fromUserId.firstName + ' ' + doc.fromUserId.lastName, status);
+        // }
 
         res.json({
             success: true,

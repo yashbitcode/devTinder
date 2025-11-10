@@ -62,12 +62,13 @@ router.get("/verify/:targetUserId", ensureAuthenticated, async (req, res) => {
                 },
             ],
             status: "accepted"
-        });
+        }).populate("toUserId fromUserId", "firstName lastName photoUrl");
 
         if(!conn) throw Error();
 
         res.json({
-            success: true
+            success: true,
+            data: conn.fromUserId._id.toString() === targetUserId ? conn.fromUserId : conn.toUserId,
         });
     } catch {
         res.status(400).json({

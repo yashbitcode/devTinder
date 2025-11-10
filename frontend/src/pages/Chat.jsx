@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import ChatService from "../services/chatService";
 import { twMerge } from "tailwind-merge";
 import { toast } from "react-toastify";
+import { defaultPic } from "../utils/constants";
 
 /* 
     - getting intial chats
@@ -24,6 +25,8 @@ const Chat = () => {
     const user = useSelector((state) => state.userReducer.user);
     const msgRef = useRef(null);
     const socketRef = useRef(null);
+    const [targetUserStatus, setTargetUserStatus] = useState(false);
+    const [targetUser, setTargetUser] = useState(null);
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState({
         load: true,
@@ -51,7 +54,10 @@ const Chat = () => {
     const verifyConn = useCallback(async () => {
         const res = await ChatService.verifyUserConnection(targetUserId);
 
-        if (res?.data?.success) return true;
+        if (res?.data?.success) {
+            setTargetUser(res.data.data);
+            return true;
+        }
         else {
             toast.error(res?.response?.data?.error || "Something went wrong");
             return false;
@@ -60,7 +66,7 @@ const Chat = () => {
 
     useEffect(() => {
         verifyConn().then((res) => {
-            if(socketRef.current) return;
+            if (socketRef.current) return;
 
             if (!res) {
                 setLoading({
@@ -74,13 +80,12 @@ const Chat = () => {
             fetchChats();
 
             const socket = setupSocketConnection();
+
             socketRef.current = socket;
 
             socket.on("receivedMessage", (msgObj) => {
                 msgObj._id = crypto.randomUUID();
                 msgObj.createdAt = Date.now().toString();
-
-                console.log("second")
 
                 setMessages((prev) => [
                     ...prev,
@@ -88,7 +93,12 @@ const Chat = () => {
                 ]);
             });
 
-            socket.emit("joinChat", [targetUserId, user._id]);
+            socket.on("getOnlineStatus", (status) => {
+                console.log(status);
+                setTargetUserStatus(status[targetUserId]);
+            });
+
+            socket.emit("joinChat", user._id, [targetUserId, user._id]);
         });
 
         return () => {
@@ -129,8 +139,17 @@ const Chat = () => {
 
     return !loading.load && (
         <div className="max-w-3xl mx-auto w-full">
-            <div className="text-2xl w-full p-4 border-2 border-gray-600">
-                Chat
+            <div className="w-full p-4 border-2 flex justify-between border-gray-600 items-center">
+                <h1 className="text-2xl">Chat</h1>
+                <div className="flex items-center gap-2">
+                    {
+                        targetUserStatus?.isOnline ? <div className={"size-2.5 rounded-full bg-green-500"} /> : targetUserStatus?.lastSeen && <div>Last Seen {new Date(targetUserStatus.lastSeen).toLocaleString()}</div>
+                    }
+                    <h2>{targetUser?.firstName}</h2>
+                    <div className="size-10 flex items-center rounded-full">
+                        <img className="rounded-full w-full h-full object-cover" src={targetUser?.photoUrl || defaultPic} alt="profile-pic" />
+                    </div>
+                </div>
             </div>
 
             <div className="w-full border-l-2 flex flex-col gap-2 border-r-2 p-4 h-96 border-gray-600 overflow-y-scroll no-scrollbar">

@@ -1,6 +1,4 @@
 const { Server } = require("socket.io");
-const User = require("../models/user.model");
-const jwt = require("jsonwebtoken");
 const Chat = require("../models/chat.model");
 
 const initialiseSocket = (httpServer) => {
@@ -11,12 +9,38 @@ const initialiseSocket = (httpServer) => {
         },
     });
 
-    io.on("connection", (socket) => {
-        socket.on("joinChat", (ids) => {
-            const roomId = ids.sort().join("_");
+    let onlineUsers = {};
 
+    /* 
+        - while joining -> store online status
+        - and in disconnecting -> remove the status
+        - io emit to update the users
+
+        - {
+            [userId]: {
+                socketId,
+                isOnline: t/f,
+                lastSeen: isOnline ? null : Date.now()
+            }
+        }
+    */
+
+    io.on("connection", (socket) => {
+        socket.on("joinChat", (userId, ids) => {
+            const roomId = ids.sort().join("_");
             socket.roomId = roomId;
+            socket.userId = userId;
+
+            if (!onlineUsers[roomId]) onlineUsers[roomId] = {};
+
+            onlineUsers[roomId][userId] = {
+                socketId: socket.id,
+                isOnline: true,
+                lastSeen: null,
+            };
+
             socket.join(roomId);
+            io.to(roomId).emit("getOnlineStatus", onlineUsers[roomId]);
         });
 
         socket.on("sendMessage", async ({ sender, message, ids }) => {
@@ -43,31 +67,39 @@ const initialiseSocket = (httpServer) => {
                 return;
             }
         });
+
+        socket.on("disconnect", () => {
+            if (
+                onlineUsers[socket?.roomId]?.[socket?.userId] &&
+                onlineUsers[socket?.roomId]?.[socket?.userId]
+            ) {
+                onlineUsers[socket.roomId][socket.userId].isOnline = false;
+                onlineUsers[socket.roomId][socket.userId].socketId = null;
+                onlineUsers[socket.roomId][socket.userId].lastSeen = Date.now();
+
+                io.to(socket.roomId).emit(
+                    "getOnlineStatus",
+                    onlineUsers[socket.roomId]
+                );
+            }
+        });
+
+        socket.on("offline", () => {
+            if (
+                onlineUsers[socket?.roomId]?.[socket?.userId] &&
+                onlineUsers[socket?.roomId]?.[socket?.userId]
+            ) {
+                onlineUsers[socket.roomId][socket.userId].isOnline = false;
+                onlineUsers[socket.roomId][socket.userId].socketId = null;
+                onlineUsers[socket.roomId][socket.userId].lastSeen = Date.now();
+
+                io.to(socket.roomId).emit(
+                    "getOnlineStatus",
+                    onlineUsers[socket.roomId]
+                );
+            }
+        });
     });
 };
-
-const verifyToken = async (socket, next) => {
-    try {
-        const token = socket.handshake.headers?.cookie?.split("=")?.[1];
-        if (!token) throw Error("Missing Token");
-
-        const verification = jwt.verify(token, process.env.JWT_SECRET);
-        const user = await User.findById(verification.userId);
-
-        if (!user) throw Error("Invalid token");
-
-        next();
-    } catch (error) {
-        next(new Error(error.message));
-    }
-};
-
-// const verifyConnection = async (socket, next) => {
-//     try {
-//         const 
-//     } catch (error) {
-//         next(new Error(error.message));
-//     }
-// }
 
 module.exports = initialiseSocket;
