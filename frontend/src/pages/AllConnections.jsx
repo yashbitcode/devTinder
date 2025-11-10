@@ -25,7 +25,7 @@ const AllConnections = () => {
     }, []);
     
     return !loading && (
-        <div className="w-full max-w-xl mx-auto">
+        <div className="w-full max-w-2xl mx-auto">
             <h1 className="text-4xl text-center">Connections</h1>
             <div className="flex flex-col gap-4 mt-7">
                 {

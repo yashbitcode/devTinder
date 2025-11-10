@@ -11,7 +11,7 @@ const initialiseSocket = (httpServer) => {
         },
     });
 
-    io.use(verifyToken).on("connection", (socket) => {
+    io.on("connection", (socket) => {
         socket.on("joinChat", (ids) => {
             const roomId = ids.sort().join("_");
 

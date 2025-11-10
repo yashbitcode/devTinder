@@ -60,7 +60,8 @@ router.get("/verify/:targetUserId", ensureAuthenticated, async (req, res) => {
                     fromUserId: targetUserId,
                     toUserId: userId,
                 },
-            ]
+            ],
+            status: "accepted"
         });
 
         if(!conn) throw Error();

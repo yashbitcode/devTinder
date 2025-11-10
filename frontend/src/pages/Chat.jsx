@@ -60,6 +60,8 @@ const Chat = () => {
 
     useEffect(() => {
         verifyConn().then((res) => {
+            if(socketRef.current) return;
+
             if (!res) {
                 setLoading({
                     load: false,
@@ -78,6 +80,8 @@ const Chat = () => {
                 msgObj._id = crypto.randomUUID();
                 msgObj.createdAt = Date.now().toString();
 
+                console.log("second")
+
                 setMessages((prev) => [
                     ...prev,
                     msgObj,
@@ -85,13 +89,17 @@ const Chat = () => {
             });
 
             socket.emit("joinChat", [targetUserId, user._id]);
-        })
+        });
 
-        return () => socketRef?.current?.disconnect();
+        return () => {
+            socketRef.current?.disconnect();
+            socketRef.current = null;
+        };
     }, [user, targetUserId, fetchChats, verifyConn]);
 
+    const sendMessage = (e) => {
+        e.preventDefault();
 
-    const sendMessage = () => {
         const msgObj = {
             sender: {
                 senderId: user._id,
@@ -116,6 +124,7 @@ const Chat = () => {
         ]);
     };
 
+
     if (!loading.load && !loading.resolved) return <div className="bg-white text-black w-fit mx-auto px-3 py-2 text-2xl rounded-md">Connection Doesn't Exist</div>
 
     return !loading.load && (
@@ -135,10 +144,10 @@ const Chat = () => {
                 }
             </div>
 
-            <div className="w-full p-4 flex gap-4 items-center border-gray-600 border-2">
+            <form className="w-full p-4 flex gap-4 items-center border-gray-600 border-2" onSubmit={sendMessage}>
                 <CustomInput ref={msgRef} />
-                <CustomButton className={"shrink w-full max-w-30"} onClick={sendMessage}>Send</CustomButton>
-            </div>
+                <CustomButton type="submit" className={"shrink w-full max-w-30"} >Send</CustomButton>
+            </form>
         </div>
     );
 };
