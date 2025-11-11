@@ -14,3 +14,10 @@
             msgTxt,
             creationDate
         } 
+
+- stripe subs.
+    - subs. created 
+        - if payment failed -> status -> failed
+        - if payment paid -> status -> paid
+        - if ended/canceled -> status -> pending
+    

@@ -10,14 +10,14 @@ const fieldsCanBeUpdated = [
 
 const stripeProducts = {
     silver: {
-        productId: "prod_TMkTy8RNlvsBZJ",
-        priceId: "price_1SQ0yaKXpXbuf1qolm5JzpM1",
+        productId: "prod_TP6FOQydHfx2Md",
+        priceId: "price_1SSI3NKXpXbuf1qostkxdCS6",
         durationMonths: 3,
         amount: 39900
     },
     gold: {
-        productId: "prod_TMkU6xcfj6kZiZ",
-        priceId: "price_1SQ0zrKXpXbuf1qoCxO7PTLF",
+        productId: "prod_TP6Fa9V0nv5ehO",
+        priceId: "price_1SSI30KXpXbuf1qoIxdPHrRu",
         durationMonths: 6,
         amount: 59900
     },

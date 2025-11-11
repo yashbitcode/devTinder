@@ -21,7 +21,7 @@ const corsOptions = {
     credentials: true,
 };
 
-app.use("/webhook", webhookRouter)
+app.use("/webhook", webhookRouter);
 
 app.use(express.json());
 app.use(cookieParser());
@@ -40,7 +40,6 @@ app.use("/profile", profileRouter);
 app.use("/request", requestRouter);
 app.use("/payment", paymentRouter);
 app.use("/chat", chatRouter);
-
 
 const httpServer = createServer(app);
 initialiseSocket(httpServer);

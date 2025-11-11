@@ -19,21 +19,23 @@ router.post(
 
             const user = await User.findById(userId);
 
-            if (!user.stripeCustomerId) {
+            if (!user.customerId) {
                 const customer = await stripe.customers.create({
                     name: user.firstName + " " + user.lastName,
                     email: user.emailId,
                 });
 
-                user.stripeCustomerId = customer.id;
+                user.customerId = customer.id;
                 await user.save();
             }
+
+            console.log(user);
 
             const order = new Order({
                 userId,
                 membershipType,
                 currency: "usd",
-                stripeCustomerId: user.stripeCustomerId,
+                stripeCustomerId: user.customerId,
                 stripeProductId: stripeProducts[membershipType].productId,
                 amount: stripeProducts[membershipType].amount,
             });
@@ -50,8 +52,8 @@ router.post(
                         quantity: 1,
                     },
                 ],
-                success_url: "http://localhost:5173/success",
-                cancel_url: "http://localhost:5173/failure",
+                success_url: `${process.env.CLIENT_BASE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+                cancel_url: process.env.CLIENT_BASE_URL + "/failure",
                 metadata: {
                     orderId: order.toObject({ getters: true })._id.toString(),
                     userId: userId.toString(),
@@ -71,5 +73,23 @@ router.post(
         }
     }
 );
+
+router.get("/customer/:customerId", async (req, res) => {
+    try {
+        const portalSession = await stripe.billingPortal.sessions.create({
+            customer: req.params.customerId,
+            return_url: process.env.CLIENT_BASE_URL
+        });
+
+        res.json({
+            success: true,
+            url: portalSession.url
+        })
+    } catch {
+            res.status(400).json({
+                success: false,
+            });
+        }
+})
 
 module.exports = router;

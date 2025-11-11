@@ -27,9 +27,15 @@ router.post(
         }
 
         const obj = event.data.object;
-
         switch (event.type) {
             case "checkout.session.completed": {
+                // const session = await stripe.checkout.sessions.retrieve(obj.id, {
+                //     expand: [
+                //         "invoice",
+                //         "subscription"
+                //     ]
+                // });
+
                 await Order.findByIdAndUpdate(obj.metadata.orderId, {
                     paymentStatus: obj.payment_status,
                     stripeSubscriptionId: obj.subscription,
@@ -37,45 +43,84 @@ router.post(
 
                 await User.findByIdAndUpdate(obj.metadata.userId, {
                     isPremium: true,
-                    membershipType: obj.metadata.membershipType
+                    membershipType: obj.metadata.membershipType,
                 });
 
                 break;
             }
-            case "payment_intent.payment_failed": {
+            case "invoice.payment_failed": {
                 await Order.findByIdAndUpdate(obj.metadata.orderId, {
                     paymentStatus: "failed",
                 });
 
                 break;
             }
-            case "charge.refund.updated": {
+            case "invoice.paid": {
                 await Order.findByIdAndUpdate(obj.metadata.orderId, {
-                    paymentStatus: "refunded",
+                    paymentStatus: "failed",
                 });
 
                 break;
             }
-            case "checkout.session.canceled": {
-                await Order.findByIdAndUpdate(obj.metadata.orderId, {
-                    paymentStatus: "canceled",
-                });
 
+            case "customer.subscription.updated": {
+                if (obj.cancellation_details.reason) {
+                    await Order.find({
+                        stripeSubscriptionId: obj.id
+                    }, {
+                        paymentStatus: "pending",
+                    });
+                } else {
+                    await Order.find({
+                        stripeSubscriptionId: obj.id
+                    }, {
+                        paymentStatus: "paid",
+                    });
+                }
                 break;
             }
-            case "checkout.session.expired": {
-                await Order.findByIdAndUpdate(obj.metadata.orderId, {
-                    paymentStatus: "expired",
-                });
+            // case "payment_intent.payment_failed": {
+            //     await Order.findByIdAndUpdate(obj.metadata.orderId, {
+            //         paymentStatus: "failed",
+            //     });
 
-                break;
-            }
+            //     break;
+            // }
+            // case "charge.refund.updated": {
+            //     await Order.findByIdAndUpdate(obj.metadata.orderId, {
+            //         paymentStatus: "refunded",
+            //     });
+
+            //     break;
+            // }
+            // case "checkout.session.canceled": {
+            //     const session = await stripe.checkout.sessions.retrieve(obj.id, {
+            //         expand: [
+            //             "invoice",
+            //             "subscription"
+            //         ]
+            //     });
+            //     console.log(session);
+
+            //     await Order.findByIdAndUpdate(obj.metadata.orderId, {
+            //         paymentStatus: "canceled",
+            //     });
+
+            //     break;
+            // }
+            // case "checkout.session.expired": {
+            //     await Order.findByIdAndUpdate(obj.metadata.orderId, {
+            //         paymentStatus: "expired",
+            //     });
+
+            //     break;
+            // }
         }
-        
+
         res.json({
             success: true,
         });
     }
-)
+);
 
 module.exports = router;
