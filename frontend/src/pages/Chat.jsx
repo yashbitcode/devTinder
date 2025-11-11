@@ -20,6 +20,12 @@ import { defaultPic } from "../utils/constants";
         } 
 */
 
+/* 
+    - getting the scroll top
+        - if 0 -> fetch messages,
+        
+*/
+
 const Chat = () => {
     const { targetUserId } = useParams();
     const user = useSelector((state) => state.userReducer.user);
@@ -152,7 +158,7 @@ const Chat = () => {
                 </div>
             </div>
 
-            <div className="w-full border-l-2 flex flex-col gap-2 border-r-2 p-4 h-96 border-gray-600 overflow-y-scroll no-scrollbar">
+            <div className="w-full border-l-2 flex flex-col gap-2 border-r-2 p-4 h-96 border-gray-600 overflow-y-scroll no-scrollbar" onScroll={(e) => console.log(e.target.scrollTop)}>
                 {
                     messages?.map((msg) => (
                         <div className={twMerge("max-w-xs w-full", (user._id === msg.sender.senderId) && "self-end text-end")} key={msg._id}>
